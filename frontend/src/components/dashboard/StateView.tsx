@@ -1,4 +1,4 @@
-import { AlertCircle, Inbox, Loader2 } from 'lucide-react';
+import { AlertCircle, Inbox, Loader2 } from "lucide-react";
 
 interface StateViewProps {
   isLoading?: boolean;
@@ -12,7 +12,7 @@ export default function StateView({
   isLoading,
   isError,
   isEmpty,
-  emptyMessage = 'Nothing to show yet.',
+  emptyMessage = "Nothing to show yet.",
   onRetry,
 }: StateViewProps) {
   if (isLoading) {
@@ -28,7 +28,9 @@ export default function StateView({
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
         <AlertCircle className="h-6 w-6 text-risk-critical" />
-        <p className="text-sm text-text-secondary">Could not load this section.</p>
+        <p className="text-sm text-text-secondary">
+          Could not load this section.
+        </p>
         {onRetry && (
           <button
             type="button"

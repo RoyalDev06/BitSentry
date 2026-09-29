@@ -61,9 +61,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="flex items-start justify-between border-b border-border-subtle p-6">
           <div>
-            <h1 className="text-xl font-bold text-brand-orange">
-              BitSentry
-            </h1>
+            <h1 className="text-xl font-bold text-brand-orange">BitSentry</h1>
 
             <p className="mt-1 text-xs text-text-secondary">
               AML Investigation Platform
@@ -105,9 +103,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         <div className="border-t border-border-subtle p-4">
-          <p className="text-xs text-text-secondary">
-            BitSentry AML
-          </p>
+          <p className="text-xs text-text-secondary">BitSentry AML</p>
         </div>
       </aside>
     </>

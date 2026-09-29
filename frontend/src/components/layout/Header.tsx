@@ -26,13 +26,9 @@ function Header() {
           <UserCircle size={30} className="text-text-secondary" />
 
           <div className="hidden sm:block">
-            <p className="text-sm font-medium text-text-primary">
-              AML Analyst
-            </p>
+            <p className="text-sm font-medium text-text-primary">AML Analyst</p>
 
-            <p className="text-xs text-text-secondary">
-              Compliance Team
-            </p>
+            <p className="text-xs text-text-secondary">Compliance Team</p>
           </div>
         </div>
       </div>

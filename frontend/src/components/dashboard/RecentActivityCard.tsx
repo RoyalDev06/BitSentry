@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { useDashboardActivity } from '../../hooks/useDashboard';
-import RiskBadge from '../ui/RiskBadge';
-import SectionCard from './SectionCard';
-import StateView from './StateView';
-import { formatBtc, formatDateTime, truncateTxId } from './dashboardUtils';
+import { Link } from "react-router-dom";
+import { useDashboardActivity } from "../../hooks/useDashboard";
+import RiskBadge from "../ui/RiskBadge";
+import SectionCard from "./SectionCard";
+import StateView from "./StateView";
+import { formatBtc, formatDateTime, truncateTxId } from "./dashboardUtils";
 
 export default function RecentActivityCard() {
   const { data, isLoading, isError, refetch } = useDashboardActivity();
@@ -14,7 +14,10 @@ export default function RecentActivityCard() {
     <SectionCard
       title="Recent Activity"
       action={
-        <Link to="/transactions" className="text-xs font-medium text-brand-teal hover:underline">
+        <Link
+          to="/transactions"
+          className="text-xs font-medium text-brand-teal hover:underline"
+        >
           View all
         </Link>
       }
@@ -40,7 +43,10 @@ export default function RecentActivityCard() {
             </thead>
             <tbody className="divide-y divide-border-subtle">
               {txs.map((t) => (
-                <tr key={t.id} className="transition-colors hover:bg-background-hover">
+                <tr
+                  key={t.id}
+                  className="transition-colors hover:bg-background-hover"
+                >
                   <td className="py-3 pr-4">
                     {/* TODO: link to detail route when it exists */}
                     <Link
@@ -50,11 +56,15 @@ export default function RecentActivityCard() {
                       {truncateTxId(t.txId)}
                     </Link>
                   </td>
-                  <td className="py-3 pr-4 text-text-secondary">{formatBtc(t.amountBtc)}</td>
+                  <td className="py-3 pr-4 text-text-secondary">
+                    {formatBtc(t.amountBtc)}
+                  </td>
                   <td className="py-3 pr-4">
                     <RiskBadge level={t.riskLevel} />
                   </td>
-                  <td className="py-3 pr-4 text-text-muted">{formatDateTime(t.timestamp)}</td>
+                  <td className="py-3 pr-4 text-text-muted">
+                    {formatDateTime(t.timestamp)}
+                  </td>
                 </tr>
               ))}
             </tbody>
