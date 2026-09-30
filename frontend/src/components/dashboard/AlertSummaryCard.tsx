@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
-import { useDashboardActivity } from '../../hooks/useDashboard';
-import RiskBadge from '../ui/RiskBadge';
-import SectionCard from './SectionCard';
-import StateView from './StateView';
-import { formatDateTime, statusClasses, statusLabel } from './dashboardUtils';
+import { Link } from "react-router-dom";
+import { useDashboardActivity } from "../../hooks/useDashboard";
+import RiskBadge from "../ui/RiskBadge";
+import SectionCard from "./SectionCard";
+import StateView from "./StateView";
+import { formatDateTime, statusClasses, statusLabel } from "./dashboardUtils";
 
 export default function AlertSummaryCard() {
   const { data, isLoading, isError, refetch } = useDashboardActivity();
@@ -14,7 +14,10 @@ export default function AlertSummaryCard() {
     <SectionCard
       title="Recent Alerts"
       action={
-        <Link to="/alerts" className="text-xs font-medium text-brand-teal hover:underline">
+        <Link
+          to="/alerts"
+          className="text-xs font-medium text-brand-teal hover:underline"
+        >
           View all
         </Link>
       }

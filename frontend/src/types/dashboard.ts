@@ -1,6 +1,6 @@
-export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
-export type AlertStatus = 'new' | 'in_review' | 'escalated' | 'cleared';
-export type ActivityType = 'transaction' | 'alert_created' | 'case_opened';
+export type RiskLevel = "low" | "medium" | "high" | "critical";
+export type AlertStatus = "new" | "in_review" | "escalated" | "cleared";
+export type ActivityType = "transaction" | "alert_created" | "case_opened";
 
 export interface DashboardSummary {
   transactionsMonitored: number;
