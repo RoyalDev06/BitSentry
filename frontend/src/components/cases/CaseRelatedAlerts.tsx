@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { RelatedAlert } from '../../types/cases';
 import RiskBadge from '../ui/RiskBadge';
-import { formatCaseDate, statusClasses, statusLabel } from './caseUtils';
+import { alertStatusClasses, alertStatusLabel, formatCaseDate } from './caseUtils';
 
 interface CaseRelatedAlertsProps {
   alerts: RelatedAlert[];
@@ -33,9 +33,9 @@ export default function CaseRelatedAlerts({ alerts }: CaseRelatedAlertsProps) {
             <div className="flex shrink-0 items-center gap-2">
               <RiskBadge level={a.riskLevel} />
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusClasses[a.status as keyof typeof statusClasses] ?? ''}`}
+                className={`rounded-full px-2 py-0.5 text-xs font-medium ${alertStatusClasses[a.status as keyof typeof alertStatusClasses] ?? ''}`}
               >
-                {statusLabel[a.status as keyof typeof statusLabel] ?? a.status}
+                {alertStatusLabel[a.status as keyof typeof alertStatusLabel] ?? a.status}
               </span>
             </div>
           </Link>
