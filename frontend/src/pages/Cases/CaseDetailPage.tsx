@@ -6,16 +6,27 @@ import RiskBadge from '../../components/ui/RiskBadge';
 import StateView from '../../components/dashboard/StateView';
 import CaseHeaderControls from '../../components/cases/CaseHeaderControls';
 import type { CaseDetail } from '../../types/cases';
+import SectionCard from '../../components/dashboard/SectionCard';
+import CaseRelatedAlerts from '../../components/cases/CaseRelatedAlerts';
+import CaseRelatedTransactions from '../../components/cases/CaseRelatedTransactions';
+import CaseRelatedAddresses from '../../components/cases/CaseRelatedAddresses';
+import CaseNotesTimeline from '../../components/cases/CaseNotesTimeline';
 
 const EMPTY: Partial<CaseDetail> = {};
+const EMPTY_NOTES: [] = [];
 export default function CaseDetailPage() {
   const { id = '' } = useParams<{ id: string }>();
   const { data, isLoading, isError, error, refetch } = useCase(id);
   
 const rawOverride = useCaseStore((s) => s.overrides[id]);
 const overrides = rawOverride ?? EMPTY;
+const rawExtra = useCaseStore((s) => s.extraNotes[id]);
+const extraNotes = rawExtra ?? EMPTY_NOTES;
+const addNote = useCaseStore((s) => s.addNote);
 
-const merged = data ? { ...data, ...overrides } : undefined;
+const merged = data
+  ? { ...data, ...overrides, notes: [...data.notes, ...extraNotes] }
+  : undefined;
 
   const notFound = isError && (error as Error)?.message === 'Case not found';
 
@@ -78,7 +89,27 @@ const merged = data ? { ...data, ...overrides } : undefined;
             <CaseHeaderControls caseId={merged.id} />
           </header>
 
-          {/* Sections go here in step 4 */}
+         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+  <SectionCard title="Related Alerts">
+    <CaseRelatedAlerts alerts={merged.relatedAlerts} />
+  </SectionCard>
+
+  <SectionCard title="Related Addresses">
+    <CaseRelatedAddresses addresses={merged.relatedAddresses} />
+  </SectionCard>
+</div>
+
+<SectionCard title="Related Transactions">
+  <CaseRelatedTransactions transactions={merged.relatedTransactions} />
+</SectionCard>
+
+<SectionCard title="Investigation Notes">
+  <CaseNotesTimeline
+    caseId={merged.id}
+    notes={merged.notes}
+    onAdd={addNote}
+  />
+</SectionCard>
         </>
       )}
     </div>
