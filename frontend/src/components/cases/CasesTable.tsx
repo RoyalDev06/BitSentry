@@ -135,7 +135,7 @@ export default function CasesTable({ cases }: CasesTableProps) {
         <tbody className="divide-y divide-border-subtle">
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id} className="transition-colors hover:bg-background-hover">
-               {row.getAllCells().map((cell) => (
+              {row.getAllCells().map((cell) => (
                 <td key={cell.id} className="py-3 pr-4">
                   <table.FlexRender cell={cell} />
                 </td>
