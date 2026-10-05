@@ -2,16 +2,19 @@ import { useCase } from '../../hooks/useCases';
 import { useCaseStore } from '../../stores/caseStore';
 import type { CaseStatus } from '../../types/cases';
 import { statusLabel } from './caseUtils';
+import type { CaseDetail } from '../../types/cases';
 
 interface CaseHeaderControlsProps {
   caseId: string;
 }
 
 const ANALYSTS = ['A. Kimani', 'J. Otieno', 'M. Wanjiru', 'Unassigned'];
+const EMPTY: Partial<CaseDetail> = {};
 
 export default function CaseHeaderControls({ caseId }: CaseHeaderControlsProps) {
   const { data } = useCase(caseId);
-  const override = useCaseStore((s) => s.overrides[caseId] ?? {});
+  const rawOverride = useCaseStore((s) => s.overrides[caseId]);
+  const override = rawOverride ?? EMPTY;
   const setStatus = useCaseStore((s) => s.setStatus);
   const assignTo = useCaseStore((s) => s.assignTo);
 

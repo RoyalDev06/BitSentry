@@ -5,13 +5,17 @@ import { useCaseStore } from '../../stores/caseStore';
 import RiskBadge from '../../components/ui/RiskBadge';
 import StateView from '../../components/dashboard/StateView';
 import CaseHeaderControls from '../../components/cases/CaseHeaderControls';
+import type { CaseDetail } from '../../types/cases';
 
+const EMPTY: Partial<CaseDetail> = {};
 export default function CaseDetailPage() {
   const { id = '' } = useParams<{ id: string }>();
   const { data, isLoading, isError, error, refetch } = useCase(id);
+  
+const rawOverride = useCaseStore((s) => s.overrides[id]);
+const overrides = rawOverride ?? EMPTY;
 
-  const overrides = useCaseStore((s) => s.overrides[id] ?? {});
-  const merged = data ? { ...data, ...overrides } : undefined;
+const merged = data ? { ...data, ...overrides } : undefined;
 
   const notFound = isError && (error as Error)?.message === 'Case not found';
 
