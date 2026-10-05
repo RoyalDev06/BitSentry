@@ -1,15 +1,58 @@
 import type { RiskLevel } from './dashboard';
 
-export type CaseStatus = 'open' | 'in_review' | 'escalated' | 'closed';
-export type CasePriority = RiskLevel; // low | medium | high | critical
+export type CaseStatus =
+  | 'open'
+  | 'under_investigation'
+  | 'escalated'
+  | 'resolved'
+  | 'closed';
+
+export type CasePriority = RiskLevel;
+
+export interface RelatedAlert {
+  id: string;
+  indicator: string;
+  riskLevel: RiskLevel;
+  status: 'new' | 'in_review' | 'escalated' | 'cleared';
+  createdAt: string;
+}
+
+export interface RelatedTransaction {
+  id: string;
+  txId: string;
+  amountBtc: number;
+  riskLevel: RiskLevel;
+  timestamp: string;
+}
+
+export interface RelatedAddress {
+  address: string;
+  label: string | null;
+  riskLevel: RiskLevel;
+  txCount: number;
+}
+
+export interface CaseNote {
+  id: string;
+  author: string;
+  body: string;
+  createdAt: string;
+}
 
 export interface Case {
-  id: string;                 // e.g. "CASE-004"
-  title: string;              // e.g. "Rapid layering via 3 addresses"
+  id: string;
+  title: string;
   status: CaseStatus;
   priority: CasePriority;
-  alertCount: number;         // how many alerts are grouped into this case
-  assignedTo: string | null;  // analyst name, or null if unassigned
-  createdAt: string;          // ISO 8601
-  updatedAt: string;          // ISO 8601
+  assignedTo: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CaseDetail extends Case {
+  description: string;
+  relatedAlerts: RelatedAlert[];
+  relatedTransactions: RelatedTransaction[];
+  relatedAddresses: RelatedAddress[];
+  notes: CaseNote[];
 }
