@@ -45,8 +45,12 @@ export const useCaseStore = create<CaseStore>((set) => ({
 }));
 
 /** Merge mock data with local overrides + locally added notes. */
-export function applyOverrides(c: CaseDetail, store: CaseStore): CaseDetail {
-  const override = store.overrides[c.id] ?? {};
-  const extra = store.extraNotes[c.id] ?? [];
+export function applyOverrides(
+  c: CaseDetail,
+  overrides: CaseStore['overrides'],
+  extraNotes: CaseStore['extraNotes'],
+): CaseDetail {
+  const override = overrides[c.id] ?? {};
+  const extra = extraNotes[c.id] ?? [];
   return { ...c, ...override, notes: [...c.notes, ...extra] };
 }
