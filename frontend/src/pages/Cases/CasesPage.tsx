@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react';
 import type { CasePriority, CaseStatus } from '../../types/cases';
 import { useCases } from '../../hooks/useCases';
 import { useCaseStore, applyOverrides } from '../../stores/caseStore';
-import CasesFilters from '../../components/cases/casesFilters';
-import CasesTable from '../../components/cases/casesTable';
+import CasesFilters from '../../components/cases/CasesFilters';
+import CasesTable from '../../components/cases/CasesTable';
 import StateView from '../../components/dashboard/StateView';
 
 export default function Cases() {
