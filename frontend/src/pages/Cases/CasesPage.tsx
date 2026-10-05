@@ -16,13 +16,10 @@ export default function Cases() {
   const [priority, setPriority] = useState<CasePriority | 'all'>('all');
   const [assignedTo, setAssignedTo] = useState<string | 'all'>('all');
 
-  const merged = useMemo(
-    () =>
-      (data ?? []).map((c) =>
-        applyOverrides(c, { overrides, extraNotes, setStatus: () => {}, assignTo: () => {}, addNote: () => {}, clear: () => {} }),
-      ),
-    [data, overrides, extraNotes],
-  );
+ const merged = useMemo(
+  () => (data ?? []).map((c) => applyOverrides(c, overrides, extraNotes)),
+  [data, overrides, extraNotes],
+);
 
   const analysts = useMemo(() => {
     const set = new Set<string>();
