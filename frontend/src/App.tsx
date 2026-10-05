@@ -6,7 +6,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Alerts from "./pages/Alerts/Alerts";
 import Transactions from "./pages/Transactions/Transactions";
 import Addresses from "./pages/Addresses/Addresses";
-import Cases from "./pages/Cases/Cases";
+import Cases from "./pages/Cases/CasesPage";
+import CaseDetailPage from "./pages/Cases/CaseDetailPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/addresses" element={<Addresses />} />
           <Route path="/cases" element={<Cases />} />
+          <Route path="/cases/:id" element={<CaseDetailPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
