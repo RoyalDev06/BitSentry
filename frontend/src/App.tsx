@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Alerts from "./pages/Alerts/Alerts";
 import Transactions from "./pages/Transactions/Transactions";
 import Addresses from "./pages/Addresses/Addresses";
-import Cases from "./pages/Cases/Cases";
+import Cases from "./pages/Cases/CasesPage";
 
 function App() {
   return (
