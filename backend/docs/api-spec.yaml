@@ -1,0 +1,68 @@
+openapi: 3.0.3
+info:
+  title: BitSentry AML API
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /api/v1/auth/login:
+    post:
+      summary: Login
+  /api/v1/auth/me:
+    get:
+      summary: Current authenticated user
+  /api/v1/bitcoin/status:
+    get:
+      summary: Bitcoin Core status
+  /api/v1/bitcoin/ingest/block/{height}:
+    post:
+      summary: Ingest one Bitcoin block
+      parameters:
+        - in: path
+          name: height
+          required: true
+          schema: {type: integer}
+  /api/v1/bitcoin/ingest/sync:
+    post:
+      summary: Sync stored blocks to Bitcoin Core tip
+  /api/v1/transactions:
+    get:
+      summary: List stored transactions
+  /api/v1/transactions/{id}:
+    get:
+      summary: Get transaction details
+  /api/v1/transactions/{id}/risk:
+    get:
+      summary: Get or calculate transaction risk
+  /api/v1/transactions/{id}/analyze:
+    post:
+      summary: Re-run AML analysis
+  /api/v1/alerts:
+    get:
+      summary: List alerts
+  /api/v1/alerts/generate:
+    post:
+      summary: Generate missing alerts from qualifying risk assessments
+  /api/v1/alerts/{id}/status:
+    patch:
+      summary: Change alert status
+  /api/v1/cases:
+    get:
+      summary: List investigation cases
+    post:
+      summary: Create investigation case
+  /api/v1/cases/{id}:
+    get:
+      summary: Get case details
+  /api/v1/cases/{id}/alerts/{alert_id}:
+    post:
+      summary: Attach alert to case
+  /api/v1/cases/{id}/notes:
+    post:
+      summary: Add investigation note
+  /api/v1/cases/{id}/status:
+    patch:
+      summary: Change case status
+  /api/v1/dashboard/summary:
+    get:
+      summary: Dashboard summary counts

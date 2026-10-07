@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { mockAlerts } from "../../mocks/alerts";
+import { useAlerts, useUpdateAlertStatus } from "../../hooks/useAlerts";
+import StateView from "../../components/dashboard/StateView";
 import RiskBadge from "../../components/ui/RiskBadge";
 import type { AlertStatus } from "../../types/dashboard";
 
@@ -18,6 +19,9 @@ const statusClasses: Record<AlertStatus, string> = {
 };
 
 function Alerts() {
+  const { data: alerts = [], isLoading, isError, refetch } = useAlerts();
+  const updateStatusMutation = useUpdateAlertStatus();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | AlertStatus>(
     "all"
@@ -31,21 +35,21 @@ const [selectedAlertId, setSelectedAlertId] = useState<string | null>(
   null
 );
 
-  const totalAlerts = mockAlerts.length;
+  const totalAlerts = alerts.length;
 
-  const newAlerts = mockAlerts.filter(
+  const newAlerts = alerts.filter(
     (alert) => alert.status === "new"
   ).length;
 
-  const inReviewAlerts = mockAlerts.filter(
+  const inReviewAlerts = alerts.filter(
     (alert) => alert.status === "in_review"
   ).length;
 
-  const escalatedAlerts = mockAlerts.filter(
+  const escalatedAlerts = alerts.filter(
     (alert) => alert.status === "escalated"
   ).length;
 
-  const filteredAlerts = mockAlerts.filter((alert) => {
+  const filteredAlerts = alerts.filter((alert) => {
     const matchesSearch =
       alert.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       alert.indicator.toLowerCase().includes(searchTerm.toLowerCase());
@@ -59,7 +63,7 @@ const matchesRisk =
 return matchesSearch && matchesStatus && matchesRisk;
   });
 
-const selectedAlert = mockAlerts.find(
+const selectedAlert = alerts.find(
   (alert) => alert.id === selectedAlertId
 );
 
@@ -154,7 +158,12 @@ const selectedAlert = mockAlerts.find(
 
       {/* Alert list */}
       {/* Alert table */}
-<div className="mt-6 overflow-hidden rounded-lg border border-border-subtle bg-background-card">
+      {isLoading || isError ? (
+        <div className="mt-6 rounded-lg border border-border-subtle bg-background-card p-6">
+          <StateView isLoading={isLoading} isError={isError} onRetry={refetch} />
+        </div>
+      ) : (
+        <div className="mt-6 overflow-hidden rounded-lg border border-border-subtle bg-background-card">
   <div className="overflow-x-auto">
     <table className="w-full text-left text-sm">
       <thead className="border-b border-border-subtle bg-background-hover">
@@ -241,6 +250,7 @@ const selectedAlert = mockAlerts.find(
     </table>
   </div>
 </div>
+)}
 
 {/* Selected alert details modal */}
 {selectedAlert && (
@@ -305,6 +315,30 @@ const selectedAlert = mockAlerts.find(
           <p className="mt-1 text-text-secondary">
             {new Date(selectedAlert.createdAt).toLocaleString()}
           </p>
+        </div>
+
+        <div className="col-span-full mt-4 border-t border-border-subtle pt-4">
+          <p className="text-sm font-medium text-text-muted">Change Status</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {(['new', 'in_review', 'escalated', 'cleared'] as AlertStatus[]).map((s) => (
+              <button
+                key={s}
+                type="button"
+                disabled={selectedAlert.status === s || updateStatusMutation.isPending}
+                onClick={() => {
+                  updateStatusMutation.mutate({ id: selectedAlert.id, status: s });
+                  setSelectedAlertId(null);
+                }}
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium border transition-colors ${
+                  selectedAlert.status === s
+                    ? 'border-transparent bg-background-elevated text-text-muted opacity-50 cursor-default'
+                    : 'border-border-subtle bg-background-hover text-text-primary hover:border-border-strong'
+                }`}
+              >
+                {statusLabels[s]}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

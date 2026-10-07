@@ -1,11 +1,14 @@
 import { useMemo, useState } from "react";
 import AddressFilters from "../../components/addresses/AddressFilters";
 import AddressTable from "../../components/addresses/AddressTable";
-import { mockAddresses } from "../../mocks/addresses";
-import type { AddressRisk, BitcoinAddress } from "../../types/addresses";
 import AddressDetails from "../../components/addresses/AddressDetails";
+import StateView from "../../components/dashboard/StateView";
+import { useAddresses } from "../../hooks/useAddresses";
+import type { AddressRisk, BitcoinAddress } from "../../types/addresses";
 
 function Addresses() {
+  const { data: addresses = [], isLoading, isError, refetch } = useAddresses();
+
   const [selectedAddress, setSelectedAddress] =
     useState<BitcoinAddress | null>(null);
 
@@ -13,7 +16,7 @@ function Addresses() {
   const [risk, setRisk] = useState<AddressRisk | "all">("all");
 
   const filteredAddresses = useMemo(() => {
-    return mockAddresses.filter((address) => {
+    return addresses.filter((address) => {
       const matchesSearch = address.address
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -22,7 +25,7 @@ function Addresses() {
 
       return matchesSearch && matchesRisk;
     });
-  }, [search, risk]);
+  }, [addresses, search, risk]);
 
   return (
     <div className="space-y-6">
@@ -43,10 +46,16 @@ function Addresses() {
         onRiskChange={setRisk}
       />
 
-      <AddressTable
-        addresses={filteredAddresses}
-        onSelectAddress={setSelectedAddress}
-      />
+      {isLoading || isError ? (
+        <div className="rounded-xl border border-border-subtle bg-background-card p-6">
+          <StateView isLoading={isLoading} isError={isError} onRetry={refetch} />
+        </div>
+      ) : (
+        <AddressTable
+          addresses={filteredAddresses}
+          onSelectAddress={setSelectedAddress}
+        />
+      )}
 
       {selectedAddress && (
         <AddressDetails

@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import TransactionDetails from "../../components/transactions/TransactionDetails";
 import TransactionFilters from "../../components/transactions/TransactionFilters";
 import TransactionTable from "../../components/transactions/TransactionTable";
-import { mockTransactions } from "../../mocks/transactions";
+import StateView from "../../components/dashboard/StateView";
+import { useTransactions } from "../../hooks/useTransactions";
 import type {
   Transaction,
   TransactionRiskLevel,
@@ -10,6 +11,8 @@ import type {
 } from "../../types/transactions";
 
 function Transactions() {
+  const { data: transactions = [], isLoading, isError, refetch } = useTransactions();
+
   const [search, setSearch] = useState("");
   const [riskLevel, setRiskLevel] =
     useState<TransactionRiskLevel | "all">("all");
@@ -22,7 +25,7 @@ function Transactions() {
   const filteredTransactions = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
-    return mockTransactions.filter((transaction) => {
+    return transactions.filter((transaction) => {
       const matchesSearch =
         normalizedSearch === "" ||
         transaction.txId.toLowerCase().includes(normalizedSearch);
@@ -37,7 +40,7 @@ function Transactions() {
 
       return matchesSearch && matchesRisk && matchesStatus;
     });
-  }, [search, riskLevel, status]);
+  }, [transactions, search, riskLevel, status]);
 
   const clearFilters = () => {
     setSearch("");
@@ -94,13 +97,17 @@ function Transactions() {
             </span>{" "}
             of{" "}
             <span className="font-medium text-text-primary">
-              {mockTransactions.length}
+              {transactions.length}
             </span>{" "}
             transactions
           </p>
         </div>
 
-        {filteredTransactions.length > 0 ? (
+        {isLoading || isError ? (
+          <div className="rounded-xl border border-border-subtle bg-background-card p-6">
+            <StateView isLoading={isLoading} isError={isError} onRetry={refetch} />
+          </div>
+        ) : filteredTransactions.length > 0 ? (
           <TransactionTable
             transactions={filteredTransactions}
             onTransactionClick={setSelectedTransaction}
