@@ -1,4 +1,5 @@
 import type { BitcoinAddress } from "../../types/addresses";
+import RiskBadge from "../ui/RiskBadge";
 
 type AddressTableProps = {
   addresses: BitcoinAddress[];
@@ -10,50 +11,53 @@ function AddressTable({
   onSelectAddress,
 }: AddressTableProps) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-surface">
+    <div className="overflow-hidden rounded-xl border border-border-subtle bg-background-card">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
-          <thead className="border-b border-border bg-surface-secondary">
+          <thead className="border-b border-border-subtle bg-background-hover">
             <tr>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Address
               </th>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Network
               </th>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Balance
               </th>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Transactions
               </th>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Risk
               </th>
-              <th className="px-6 py-4 text-sm font-medium text-text-secondary">
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
                 Last Activity
+              </th>
+              <th className="px-6 py-4 text-xs font-medium text-text-secondary uppercase">
+                Action
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-border-subtle">
             {addresses.map((address) => (
               <tr
                 key={address.id}
                 onClick={() => onSelectAddress(address)}
-                className="cursor-pointer transition-colors hover:bg-surface-secondary"
+                className="cursor-pointer transition-colors hover:bg-background-hover"
               >
                 <td className="px-6 py-4">
-                  <span className="font-mono text-sm text-text-primary">
+                  <span className="font-mono text-sm font-medium text-text-primary">
                     {address.address}
                   </span>
                 </td>
 
-                <td className="px-6 py-4 text-sm text-text-secondary">
+                <td className="px-6 py-4 text-sm text-text-secondary capitalize">
                   {address.network}
                 </td>
 
-                <td className="px-6 py-4 text-sm text-text-primary">
+                <td className="px-6 py-4 text-sm font-medium text-text-primary">
                   {address.balance} BTC
                 </td>
 
@@ -62,11 +66,24 @@ function AddressTable({
                 </td>
 
                 <td className="px-6 py-4">
-                  <RiskBadge risk={address.risk} />
+                  <RiskBadge level={address.risk} />
                 </td>
 
                 <td className="px-6 py-4 text-sm text-text-secondary">
-                  {address.lastActivity}
+                  {new Date(address.lastActivity).toLocaleDateString()}
+                </td>
+
+                <td className="px-6 py-4 text-sm">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectAddress(address);
+                    }}
+                    className="font-medium text-brand-orange hover:underline text-xs"
+                  >
+                    Investigate
+                  </button>
                 </td>
               </tr>
             ))}
@@ -74,27 +91,6 @@ function AddressTable({
         </table>
       </div>
     </div>
-  );
-}
-
-type RiskBadgeProps = {
-  risk: BitcoinAddress["risk"];
-};
-
-function RiskBadge({ risk }: RiskBadgeProps) {
-  const styles = {
-    low: "bg-risk-low/10 text-risk-low",
-    medium: "bg-risk-medium/10 text-risk-medium",
-    high: "bg-risk-high/10 text-risk-high",
-    critical: "bg-risk-critical/10 text-risk-critical",
-  };
-
-  return (
-    <span
-      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium capitalize ${styles[risk]}`}
-    >
-      {risk}
-    </span>
   );
 }
 
