@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   Wallet,
   FolderSearch,
+  Settings,
   X,
 } from "lucide-react";
 
@@ -33,6 +34,11 @@ const navigation = [
     name: "Cases",
     path: "/cases",
     icon: FolderSearch,
+  },
+  {
+    name: "Settings",
+    path: "/settings",
+    icon: Settings,
   },
 ];
 
