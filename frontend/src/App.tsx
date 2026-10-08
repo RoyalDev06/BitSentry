@@ -1,5 +1,3 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import DashboardPage from './pages/Dashboard/DashboardPage';
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "./components/layout/AppLayout";
@@ -8,27 +6,25 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Alerts from "./pages/Alerts/Alerts";
 import Transactions from "./pages/Transactions/Transactions";
 import Addresses from "./pages/Addresses/Addresses";
-import Cases from "./pages/Cases/Cases";
+import Cases from "./pages/Cases/CasesPage";
+import CaseDetailPage from "./pages/Cases/CaseDetailPage";
+import Settings from "./pages/Settings/Settings";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
         <Route element={<AppLayout />}>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/addresses" element={<Addresses />} />
           <Route path="/cases" element={<Cases />} />
-
-          <Route
-            path="/"
-            element={<Navigate to="/dashboard" replace />}
-          />
+          <Route path="/cases/:id" element={<CaseDetailPage />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,65 +1,63 @@
-import { useCallback, useEffect, useState } from 'react';
-
-export type Theme = 'dark' | 'light';
-
-const STORAGE_KEY = 'bitsentry-theme';
-
-function getInitialTheme(): Theme {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === 'light' || stored === 'dark') return stored;
-  return 'dark'; // dark-first per the design brief
 import { useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+export type Theme = "light" | "dark" | "system";
 
 const STORAGE_KEY = "bitsentry-theme";
 
-function getInitialTheme(): Theme {
-  const savedTheme = localStorage.getItem(STORAGE_KEY);
-
-  if (savedTheme === "light" || savedTheme === "dark") {
-    return savedTheme;
+function getSystemTheme(): "light" | "dark" {
+  if (typeof window !== "undefined" && window.matchMedia) {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
   }
-
   return "dark";
 }
 
+function getStoredTheme(): Theme {
+  const savedTheme = localStorage.getItem(STORAGE_KEY);
+  if (savedTheme === "light" || savedTheme === "dark" || savedTheme === "system") {
+    return savedTheme as Theme;
+  }
+  return "dark";
+}
+
+function applyThemeToDocument(theme: Theme) {
+  const resolved = theme === "system" ? getSystemTheme() : theme;
+  const root = document.documentElement;
+  if (resolved === "light") {
+    root.setAttribute("data-theme", "light");
+  } else {
+    root.removeAttribute("data-theme");
+  }
+}
+
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(getInitialTheme);
+  const [theme, setThemeState] = useState<Theme>(getStoredTheme);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'light') {
-      root.setAttribute('data-theme', 'light');
-    } else {
-      root.removeAttribute('data-theme');
-    }
-    localStorage.setItem(STORAGE_KEY, theme);
+    applyThemeToDocument(theme);
+
+    const handleThemeChange = () => {
+      const current = getStoredTheme();
+      setThemeState(current);
+      applyThemeToDocument(current);
+    };
+
+    window.addEventListener("themechange", handleThemeChange);
+    return () => window.removeEventListener("themechange", handleThemeChange);
   }, [theme]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
-  }, []);
-
-  return { theme, toggleTheme };
-
-    if (theme === "light") {
-      root.setAttribute("data-theme", "light");
-    } else {
-      root.removeAttribute("data-theme");
-    }
-
-    localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+  const setTheme = (newTheme: Theme) => {
+    localStorage.setItem(STORAGE_KEY, newTheme);
+    applyThemeToDocument(newTheme);
+    setThemeState(newTheme);
+    window.dispatchEvent(new Event("themechange"));
+  };
 
   const toggleTheme = () => {
-    setTheme((currentTheme) =>
-      currentTheme === "dark" ? "light" : "dark",
-    );
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
   };
 
-  return {
-    theme,
-    toggleTheme,
-  };
+  return { theme, setTheme, toggleTheme };
 }

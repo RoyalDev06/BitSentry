@@ -1,15 +1,22 @@
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { useRiskDistribution } from '../../hooks/useDashboard';
-import type { RiskLevel } from '../../types/dashboard';
-import SectionCard from './SectionCard';
-import StateView from './StateView';
-import { riskLabel } from './dashboardUtils';
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+import { useRiskDistribution } from "../../hooks/useDashboard";
+import type { RiskLevel } from "../../types/dashboard";
+import SectionCard from "./SectionCard";
+import StateView from "./StateView";
+import { riskLabel } from "./dashboardUtils";
 
 const RISK_COLORS: Record<RiskLevel, string> = {
-  low: 'var(--color-risk-low)',
-  medium: 'var(--color-risk-medium)',
-  high: 'var(--color-risk-high)',
-  critical: 'var(--color-risk-critical)',
+  low: "var(--color-risk-low)",
+  medium: "var(--color-risk-medium)",
+  high: "var(--color-risk-high)",
+  critical: "var(--color-risk-critical)",
 };
 
 export default function RiskDistributionCard() {
@@ -45,21 +52,28 @@ export default function RiskDistributionCard() {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  background: 'var(--color-background-card)',
-                  border: '1px solid var(--color-border-subtle)',
+                  background: "var(--color-background-card)",
+                  border: "1px solid var(--color-border-subtle)",
                   borderRadius: 8,
-                  color: 'var(--color-text-primary)',
+                  color: "var(--color-text-primary)",
                 }}
                 formatter={(value, _name, item) => [
                   `${value}`,
-                  riskLabel[(item as { payload: { level: RiskLevel } }).payload.level],
+                  riskLabel[
+                    (item as { payload: { level: RiskLevel } }).payload.level
+                  ],
                 ]}
               />
               <Legend
                 formatter={(_v, entry) =>
-                  riskLabel[(entry as { payload: { level: RiskLevel } }).payload.level]
+                  riskLabel[
+                    (entry as { payload: { level: RiskLevel } }).payload.level
+                  ]
                 }
-                wrapperStyle={{ fontSize: 12, color: 'var(--color-text-secondary)' }}
+                wrapperStyle={{
+                  fontSize: 12,
+                  color: "var(--color-text-secondary)",
+                }}
               />
             </PieChart>
           </ResponsiveContainer>

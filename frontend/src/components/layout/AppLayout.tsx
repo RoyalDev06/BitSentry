@@ -10,10 +10,7 @@ function AppLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-text-primary">
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-center border-b border-border-subtle bg-background-card px-4 py-3 lg:hidden">
