@@ -23,6 +23,7 @@ def detect(db, transaction) -> dict | None:
     if not prior:
         return None
 
+    seconds = (transaction.timestamp - prior).total_seconds()
     t1 = transaction.timestamp.replace(tzinfo=None) if transaction.timestamp.tzinfo else transaction.timestamp
     t2 = prior.replace(tzinfo=None) if prior.tzinfo else prior
     seconds = (t1 - t2).total_seconds()

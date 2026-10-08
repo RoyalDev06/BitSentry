@@ -1,5 +1,3 @@
-"""SQLAlchemy model exports used by the backend services."""
-from app.wallets.models import *  # noqa: F401,F403
 from datetime import datetime, timezone
 from sqlalchemy import (
     String, Integer, BigInteger, Boolean, DateTime, ForeignKey, Text,

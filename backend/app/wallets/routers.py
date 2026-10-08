@@ -1,7 +1,3 @@
-"""API router exports."""
-from app.wallets.routers import router
-
-__all__ = ["router"]
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
@@ -292,68 +288,4 @@ def dashboard_summary(db: Session = Depends(get_db), _: User = Depends(require_p
     total_alerts = db.scalar(select(func.count(Alert.id))) or 0
     open_alerts = db.scalar(select(func.count(Alert.id)).where(Alert.status.in_(["OPEN", "IN_REVIEW", "ESCALATED"]))) or 0
     high_risk = db.scalar(select(func.count(RiskAssessment.id)).where(RiskAssessment.level.in_(["HIGH", "CRITICAL"]))) or 0
-    open_cases = db.scalar(select(func.count(Case.id)).where(Case.status.in_(["OPEN", "IN_PROGRESS", "ESCALATED"]))) or 0
-    return {
-        "transactions": total_transactions,
-        "transactions_monitored": total_transactions,
-        "alerts": total_alerts,
-        "open_alerts": open_alerts,
-        "active_alerts": open_alerts,
-        "high_or_critical_risk": high_risk,
-        "high_critical_alerts": high_risk,
-        "open_cases": open_cases,
-    }
-
-
-@router.get("/dashboard/risk-distribution")
-def dashboard_risk_distribution(db: Session = Depends(get_db), _: User = Depends(require_permission("transactions:read"))):
-    levels = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-    counts = {lvl: 0 for lvl in levels}
-    rows = db.execute(
-        select(RiskAssessment.level, func.count(RiskAssessment.id)).group_by(RiskAssessment.level)
-    ).all()
-    for lvl, cnt in rows:
-        if lvl and lvl.upper() in counts:
-            counts[lvl.upper()] = cnt
-        elif lvl:
-            counts[lvl.upper()] = cnt
-    return [{"level": lvl.lower(), "count": cnt} for lvl, cnt in counts.items()]
-
-
-@router.get("/dashboard/activity")
-def dashboard_activity(db: Session = Depends(get_db), _: User = Depends(require_permission("transactions:read"))):
-    recent_txs = db.scalars(select(Transaction).order_by(Transaction.timestamp.desc()).limit(10)).all()
-    recent_alerts = db.scalars(select(Alert).order_by(Alert.created_at.desc()).limit(10)).all()
-
-    formatted_txs = []
-    for tx in recent_txs:
-        formatted_txs.append({
-            "id": str(tx.id),
-            "txId": tx.txid,
-            "amountBtc": round((tx.total_output_sats or 0) / 100_000_000, 8),
-            "riskLevel": "low",
-            "timestamp": tx.timestamp.isoformat() if tx.timestamp else "",
-            "activityType": "transaction",
-        })
-
-    formatted_alerts = []
-    for alert in recent_alerts:
-        indicator_label = "Suspicious Activity"
-        if alert.indicators and isinstance(alert.indicators, list) and len(alert.indicators) > 0:
-            first_ind = alert.indicators[0]
-            if isinstance(first_ind, dict):
-                indicator_label = first_ind.get("name") or first_ind.get("code") or indicator_label
-            elif isinstance(first_ind, str):
-                indicator_label = first_ind
-        formatted_alerts.append({
-            "id": str(alert.id),
-            "riskLevel": (alert.risk_level or "low").lower(),
-            "indicator": indicator_label,
-            "status": "new" if alert.status == "OPEN" else alert.status.lower(),
-            "createdAt": alert.created_at.isoformat() if alert.created_at else "",
-        })
-
-    return {
-        "recentTransactions": formatted_txs,
-        "recentAlerts": formatted_alerts,
-    }
+    return {"transactions": total_transactions, "alerts": total_alerts, "open_alerts": open_alerts, "high_or_critical_risk": high_risk}

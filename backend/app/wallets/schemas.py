@@ -1,5 +1,3 @@
-"""Pydantic API schemas."""
-from app.wallets.schemas import *  # noqa: F401,F403
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
