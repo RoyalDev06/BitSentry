@@ -1,30 +1,38 @@
-from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
+from dataclasses import dataclass
 
 
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+def _int(name: str, default: int) -> int:
+    return int(os.getenv(name, str(default)))
 
-    app_name: str = "BitSentry AML API"
-    database_url: str = "sqlite:///./bitsentry.db"
-    jwt_secret: str = "CHANGE_ME_IN_ENV"
+
+def _float(name: str, default: float) -> float:
+    return float(os.getenv(name, str(default)))
+
+
+@dataclass(frozen=True)
+class Settings:
+    app_name: str = os.getenv("APP_NAME", "BitSentry AML API")
+    database_url: str = os.getenv("DATABASE_URL", "sqlite:///./bitsentry.db")
+    jwt_secret: str = os.getenv("JWT_SECRET", "CHANGE_ME_IN_ENV")
     jwt_algorithm: str = "HS256"
-    access_token_minutes: int = 60
-    bitcoin_rpc_url: str = "http://127.0.0.1:18443"
-    bitcoin_rpc_user: str = ""
-    bitcoin_rpc_password: str = ""
-    bitcoin_network: str = "regtest"
-    large_value_threshold_sats: int = 10_000_000
-    high_frequency_count: int = 5
-    high_frequency_window_minutes: int = 10
-    rapid_movement_minutes: int = 10
-    address_anomaly_counterparties: int = 10
-    unusual_output_count: int = 10
-    peel_min_outputs: int = 2
-    peel_dominant_ratio: float = 0.60
-    multiple_hop_depth: int = 2
-    alert_min_score: int = 60
-    admin_email: str = "admin@bitsentry.local"
-    admin_password: str = "ChangeMe123!"
+    access_token_minutes: int = _int("ACCESS_TOKEN_MINUTES", 60)
+    bitcoin_rpc_url: str = os.getenv("BITCOIN_RPC_URL", "http://127.0.0.1:18443")
+    bitcoin_rpc_user: str = os.getenv("BITCOIN_RPC_USER", "")
+    bitcoin_rpc_password: str = os.getenv("BITCOIN_RPC_PASSWORD", "")
+    bitcoin_network: str = os.getenv("BITCOIN_NETWORK", "regtest")
+    large_value_threshold_sats: int = _int("LARGE_VALUE_THRESHOLD_SATS", 10_000_000)
+    high_frequency_count: int = _int("HIGH_FREQUENCY_COUNT", 5)
+    high_frequency_window_minutes: int = _int("HIGH_FREQUENCY_WINDOW_MINUTES", 10)
+    rapid_movement_minutes: int = _int("RAPID_MOVEMENT_MINUTES", 10)
+    address_anomaly_counterparties: int = _int("ADDRESS_ANOMALY_COUNTERPARTIES", 10)
+    unusual_output_count: int = _int("UNUSUAL_OUTPUT_COUNT", 10)
+    peel_min_outputs: int = _int("PEEL_MIN_OUTPUTS", 2)
+    peel_dominant_ratio: float = _float("PEEL_DOMINANT_RATIO", 0.60)
+    multiple_hop_depth: int = _int("MULTIPLE_HOP_DEPTH", 2)
+    alert_min_score: int = _int("ALERT_MIN_SCORE", 60)
+    admin_email: str = os.getenv("ADMIN_EMAIL", "admin@bitsentry.local")
+    admin_password: str = os.getenv("ADMIN_PASSWORD", "ChangeMe123!")
 
 
 settings = Settings()

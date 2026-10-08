@@ -24,6 +24,9 @@ def detect(db, transaction) -> dict | None:
         return None
 
     seconds = (transaction.timestamp - prior).total_seconds()
+    t1 = transaction.timestamp.replace(tzinfo=None) if transaction.timestamp.tzinfo else transaction.timestamp
+    t2 = prior.replace(tzinfo=None) if prior.tzinfo else prior
+    seconds = (t1 - t2).total_seconds()
     if seconds < 0 or seconds > settings.rapid_movement_minutes * 60:
         return None
 
