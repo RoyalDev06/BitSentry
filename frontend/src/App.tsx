@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "./components/layout/AppLayout";
 
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 
@@ -16,23 +17,32 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Authentication pages — no dashboard layout */}
-       <Route path="/login" element={<Login />} />
-<Route path="/signup" element={<Signup />} />
+  {/* Authentication pages */}
+  <Route path="/login" element={<Login />} />
+  <Route path="/signup" element={<Signup />} />
 
-        {/* Application pages — use dashboard layout */}
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/alerts" element={<Alerts />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/addresses" element={<Addresses />} />
-          <Route path="/cases" element={<Cases />} />
-          <Route path="/cases/:id" element={<CaseDetailPage />} />
-        </Route>
+  {/* Protected application */}
+  <Route element={<ProtectedRoute />}>
+    <Route element={<AppLayout />}>
+      <Route
+        path="/"
+        element={<Navigate to="/dashboard" replace />}
+      />
 
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/alerts" element={<Alerts />} />
+      <Route path="/transactions" element={<Transactions />} />
+      <Route path="/addresses" element={<Addresses />} />
+      <Route path="/cases" element={<Cases />} />
+      <Route path="/cases/:id" element={<CaseDetailPage />} />
+    </Route>
+  </Route>
+
+  <Route
+    path="*"
+    element={<Navigate to="/dashboard" replace />}
+  />
+</Routes>
     </BrowserRouter>
   );
 }

@@ -32,8 +32,8 @@ function Login() {
       });
 
       localStorage.setItem("access_token", result.access_token);
-
-navigate("/dashboard");
+      navigate("/dashboard");
+      
     } catch (error) {
       setError(
         error instanceof Error

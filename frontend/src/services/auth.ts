@@ -10,6 +10,18 @@ export interface LoginResponse {
   token_type: string;
 }
 
+export interface CurrentUser {
+  id: number;
+  email: string;
+  full_name: string;
+  is_active: boolean;
+  roles: string[];
+}
+
+export async function getCurrentUser(): Promise<CurrentUser> {
+  return apiRequest<CurrentUser>("/auth/me");
+}
+
 export async function login(
   credentials: LoginRequest,
 ): Promise<LoginResponse> {
