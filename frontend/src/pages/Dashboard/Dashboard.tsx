@@ -6,26 +6,24 @@ import SummaryCards from "../../components/dashboard/SummaryCards";
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
-      <div className="mx-auto max-w-7xl">
-        <header>
-          <h1 className="text-2xl font-semibold text-text-primary">
-            Dashboard
-          </h1>
+      <header>
+        <h1 className="text-2xl font-semibold text-text-primary">
+          Dashboard
+        </h1>
 
-          <p className="mt-1 text-sm text-text-secondary">
-            Overview of monitored activity, risk and alerts.
-          </p>
-        </header>
+        <p className="mt-1 text-sm text-text-secondary">
+          Overview of monitored activity, risk and alerts.
+        </p>
+      </header>
 
-        <SummaryCards />
+      <SummaryCards />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <RiskDistributionCard />
-          <AlertSummaryCard />
-        </div>
-
-        <RecentActivityCard />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <RiskDistributionCard />
+        <AlertSummaryCard />
       </div>
+
+      <RecentActivityCard />
     </div>
   );
 }

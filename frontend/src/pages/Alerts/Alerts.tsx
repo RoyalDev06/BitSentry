@@ -68,17 +68,19 @@ const selectedAlert = alerts.find(
 );
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-text-primary">
-        Alerts
-      </h1>
+    <div className="space-y-6">
+      <header>
+        <h1 className="text-2xl font-semibold text-text-primary">
+          Alerts
+        </h1>
 
-      <p className="mt-2 text-text-secondary">
-        Monitor and investigate suspicious activity alerts.
-      </p>
+        <p className="mt-1 text-sm text-text-secondary">
+          Monitor and investigate suspicious activity alerts.
+        </p>
+      </header>
 
       {/* Alert summary */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-lg border border-border-subtle bg-background-card p-4">
           <p className="text-sm text-text-secondary">Total Alerts</p>
           <p className="mt-2 text-2xl font-semibold text-text-primary">
@@ -199,7 +201,8 @@ const selectedAlert = alerts.find(
           filteredAlerts.map((alert) => (
             <tr
               key={alert.id}
-              className="border-b border-border-subtle last:border-b-0 hover:bg-background-hover"
+              onClick={() => setSelectedAlertId(alert.id)}
+              className="border-b border-border-subtle last:border-b-0 hover:bg-background-hover cursor-pointer"
             >
               <td className="px-4 py-4 font-medium text-text-primary">
                 {alert.id}

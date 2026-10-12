@@ -7,7 +7,7 @@ import {
   useTable,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { CaseDetail } from '../../types/cases';
 import RiskBadge from '../ui/RiskBadge';
 import { formatCaseDate, statusClasses, statusLabel } from './caseUtils';
@@ -23,6 +23,8 @@ interface CasesTableProps {
 }
 
 export default function CasesTable({ cases }: CasesTableProps) {
+  const navigate = useNavigate();
+
   const columns = useMemo<ColumnDef<typeof features, CaseDetail>[]>(
     () => [
       {
@@ -32,7 +34,8 @@ export default function CasesTable({ cases }: CasesTableProps) {
         cell: (info) => (
           <Link
             to={`/cases/${info.row.original.id}`}
-            className="font-mono text-xs text-brand-teal hover:underline"
+            className="font-mono text-xs font-semibold text-brand-teal hover:underline"
+            onClick={(e) => e.stopPropagation()}
           >
             {info.row.original.id}
           </Link>
@@ -43,7 +46,7 @@ export default function CasesTable({ cases }: CasesTableProps) {
         accessorKey: 'title',
         header: 'Title',
         cell: (info) => (
-          <span className="text-sm text-text-primary">{info.row.original.title}</span>
+          <span className="text-sm font-medium text-text-primary">{info.row.original.title}</span>
         ),
       },
       {
@@ -85,6 +88,19 @@ export default function CasesTable({ cases }: CasesTableProps) {
           <span className="text-sm text-text-muted">
             {formatCaseDate(info.row.original.updatedAt)}
           </span>
+        ),
+      },
+      {
+        id: 'actions',
+        header: 'Action',
+        cell: (info) => (
+          <Link
+            to={`/cases/${info.row.original.id}`}
+            onClick={(e) => e.stopPropagation()}
+            className="font-medium text-brand-orange hover:underline text-xs"
+          >
+            Investigate →
+          </Link>
         ),
       },
     ],
@@ -134,7 +150,11 @@ export default function CasesTable({ cases }: CasesTableProps) {
         </thead>
         <tbody className="divide-y divide-border-subtle">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="transition-colors hover:bg-background-hover">
+            <tr
+              key={row.id}
+              onClick={() => navigate(`/cases/${row.original.id}`)}
+              className="cursor-pointer transition-colors hover:bg-background-hover"
+            >
               {row.getAllCells().map((cell) => (
                 <td key={cell.id} className="py-3 pr-4">
                   <table.FlexRender cell={cell} />

@@ -8,6 +8,7 @@ import Transactions from "./pages/Transactions/Transactions";
 import Addresses from "./pages/Addresses/Addresses";
 import Cases from "./pages/Cases/CasesPage";
 import CaseDetailPage from "./pages/Cases/CaseDetailPage";
+import Settings from "./pages/Settings/Settings";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/addresses" element={<Addresses />} />
           <Route path="/cases" element={<Cases />} />
           <Route path="/cases/:id" element={<CaseDetailPage />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

@@ -49,14 +49,15 @@ function Transactions() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
+    <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-semibold text-text-primary">
           Transactions
         </h1>
 
         <p className="mt-1 text-sm text-text-secondary">
-          Monitor Bitcoin transactions and transaction risk.
+          Review monitored transactions and their associated risk
+          levels.
         </p>
       </header>
 
@@ -68,16 +69,6 @@ function Transactions() {
       )}
 
       <section className="space-y-4">
-        <div>
-          <h2 className="text-lg font-semibold text-text-primary">
-            Transaction Activity
-          </h2>
-
-          <p className="mt-1 text-sm text-text-secondary">
-            Review monitored transactions and their associated risk
-            levels.
-          </p>
-        </div>
 
         <TransactionFilters
           search={search}

@@ -29,15 +29,15 @@ function Addresses() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-text-primary">
+      <header>
+        <h1 className="text-2xl font-semibold text-text-primary">
           Addresses
         </h1>
 
-        <p className="mt-2 text-text-secondary">
+        <p className="mt-1 text-sm text-text-secondary">
           Investigate Bitcoin addresses and wallet activity.
         </p>
-      </div>
+      </header>
 
       <AddressFilters
         search={search}
