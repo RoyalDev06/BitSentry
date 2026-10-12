@@ -1,5 +1,5 @@
 import type { CurrentUser, BitcoinStatus } from '../types/auth';
-import { api, apiRequest, clearAuthToken, setAuthToken, getAuthToken } from './api';
+import { api, clearAuthToken, setAuthToken, getAuthToken } from './api';
 
 export type { CurrentUser, BitcoinStatus };
 
