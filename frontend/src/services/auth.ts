@@ -1,5 +1,17 @@
 import type { CurrentUser, BitcoinStatus } from '../types/auth';
-import { api, clearAuthToken } from './api';
+import { api, apiRequest, clearAuthToken, setAuthToken, getAuthToken } from './api';
+
+export type { CurrentUser, BitcoinStatus };
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+}
 
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 
@@ -20,8 +32,18 @@ const mockBitcoinStatus: BitcoinStatus = {
   error: 'Bitcoin node offline (Mock Mode)',
 };
 
+export async function login(
+  credentials: LoginRequest
+): Promise<LoginResponse> {
+  const result = await api.post<LoginResponse>('/auth/login', credentials);
+  if (result?.access_token) {
+    setAuthToken(result.access_token);
+  }
+  return result;
+}
+
 export async function getCurrentUser(): Promise<CurrentUser> {
-  if (USE_MOCKS) {
+  if (USE_MOCKS && !getAuthToken()) {
     return mockUser;
   }
   return api.get<CurrentUser>('/auth/me');
@@ -36,6 +58,5 @@ export async function getBitcoinStatus(): Promise<BitcoinStatus> {
 
 export function logout(): void {
   clearAuthToken();
-  // Reload window to reset all in-memory React and Query state
-  window.location.reload();
+  window.location.href = '/login';
 }
