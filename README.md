@@ -371,6 +371,37 @@ Open the URL in your browser.
 
 ---
 
+# Running the Full Stack
+
+The frontend talks to the FastAPI backend by default. Run both in separate terminals.
+
+**1. Backend** (see [backend/README.md](backend/README.md) for details):
+
+```bash
+cd backend
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements-dev.txt
+cp .env.example .env             # then set a real JWT_SECRET
+python seed_demo_data.py         # optional: demo transactions, alerts and a case
+uvicorn app.main:app --reload    # http://127.0.0.1:8000
+```
+
+**2. Frontend:**
+
+```bash
+cd frontend
+npm install
+cp .env.example .env
+npm run dev                      # http://localhost:5173
+```
+
+Sign in at `http://localhost:5173/login` with the development admin (`admin@bitsentry.local` / `ChangeMe123!`, set by `ADMIN_EMAIL` / `ADMIN_PASSWORD` in `backend/.env`). There is no public sign-up; admins create accounts through `POST /api/v1/users`.
+
+To work on the UI without the backend, set `VITE_USE_MOCKS=true` in `frontend/.env`. Login is skipped and every page uses the data in `src/mocks/`.
+
+---
+
 # Frontend Commands
 
 ### Start development server
@@ -417,7 +448,10 @@ A `.env.example` file should contain variable names without exposing secrets.
 Example:
 
 ```env
+# Backend API root (default: http://127.0.0.1:8000/api/v1)
 VITE_API_BASE_URL=
+# Set to true to run the UI on mock data without the backend
+VITE_USE_MOCKS=false
 ```
 
 Developers should create their own local `.env` file based on the project's environment requirements.

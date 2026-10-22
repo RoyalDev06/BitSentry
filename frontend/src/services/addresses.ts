@@ -1,12 +1,10 @@
 import type { BitcoinAddress } from '../types/addresses';
 import { mockAddresses } from '../mocks/addresses';
-import { api } from './api';
+import { api, USE_MOCKS } from './api';
 import {
   toFrontendAddress,
   type BackendAddress,
 } from './adapters';
-
-const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 
 const mockMode = () =>
   new URLSearchParams(window.location.search).get('mock');

@@ -1,12 +1,13 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1';
 
+// Mock data is opt-in: set VITE_USE_MOCKS=true to run without the backend.
+export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
+
 const TOKEN_KEY = 'bitsentry_token';
 
-let isLoggingIn = false;
-
 export function getAuthToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem('token');
+  return localStorage.getItem(TOKEN_KEY);
 }
 
 export function setAuthToken(token: string): void {
@@ -15,45 +16,17 @@ export function setAuthToken(token: string): void {
 
 export function clearAuthToken(): void {
   localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem('token');
 }
 
 /**
- * Transparent dev auto-login to obtain a valid Bearer token from seeded admin credentials.
- * Used during development while the frontend login UI is being built.
+ * Backend timestamps are UTC but serialized without an offset, which the
+ * browser would otherwise parse as local time.
  */
-async function ensureAuthToken(): Promise<string | null> {
-  const existing = getAuthToken();
-  if (existing) return existing;
-
-  if (isLoggingIn) return null;
-  isLoggingIn = true;
-
-  try {
-    const res = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: 'admin@bitsentry.local',
-        password: 'ChangeMe123!',
-      }),
-    });
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data?.access_token) {
-        setAuthToken(data.access_token);
-        return data.access_token;
-      }
-    }
-  } catch (err) {
-    // Backend may not be reachable or dev offline
-    console.debug('Dev auto-login skipped or unavailable:', err);
-  } finally {
-    isLoggingIn = false;
-  }
-
-  return null;
+export function toUtcIso(value: string): string;
+export function toUtcIso(value: string | null | undefined): string | null | undefined;
+export function toUtcIso(value: string | null | undefined) {
+  if (!value || /([zZ]|[+-]\d{2}:?\d{2})$/.test(value)) return value;
+  return `${value}Z`;
 }
 
 export class ApiError extends Error {
@@ -74,10 +47,7 @@ async function request<T>(
 ): Promise<T> {
   const url = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
 
-  let token = getAuthToken();
-  if (!token) {
-    token = await ensureAuthToken();
-  }
+  const token = getAuthToken();
 
   const headers = new Headers(options.headers || {});
   if (!headers.has('Content-Type') && !(options.body instanceof FormData)) {
@@ -91,6 +61,14 @@ async function request<T>(
     ...options,
     headers,
   });
+
+  // Expired or revoked session: drop the token and send the user to sign in.
+  if (response.status === 401 && token) {
+    clearAuthToken();
+    if (window.location.pathname !== '/login') {
+      window.location.assign('/login');
+    }
+  }
 
   if (!response.ok) {
     let errorDetail = response.statusText;

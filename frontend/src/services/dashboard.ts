@@ -8,15 +8,13 @@ import {
   mockRiskDistribution,
   mockActivity,
 } from '../mocks/dashboard';
-import { api } from './api';
+import { api, USE_MOCKS } from './api';
 import {
   toFrontendDashboardSummary,
   toFrontendRiskDistribution,
   toFrontendDashboardActivity,
   type BackendDashboardSummary,
 } from './adapters';
-
-const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 
 // Demo switch: /dashboard?mock=loading | empty | error
 const mockMode = () =>

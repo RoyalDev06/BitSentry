@@ -45,6 +45,12 @@ class TransactionOutputOut(BaseModel):
     script_type: str | None
 
 
+class TransactionRiskSummaryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    score: int
+    level: str
+
+
 class TransactionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -57,6 +63,7 @@ class TransactionOut(BaseModel):
     is_coinbase: bool
     inputs: list[TransactionInputOut]
     outputs: list[TransactionOutputOut]
+    risk: TransactionRiskSummaryOut | None = None
 
 
 class RiskIndicatorOut(BaseModel):

@@ -1,16 +1,12 @@
 import type { Alert } from '../types/alerts';
 import type { AlertStatus } from '../types/dashboard';
 import { mockAlerts } from '../mocks/alerts';
-import {
-  api,
-} from './api';
+import { api, USE_MOCKS } from './api';
 import {
   toFrontendAlert,
   toBackendAlertStatus,
   type BackendAlert,
 } from './adapters';
-
-const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 
 const mockMode = () =>
   new URLSearchParams(window.location.search).get('mock');

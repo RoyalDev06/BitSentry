@@ -54,3 +54,26 @@ def test_end_to_end_risk_alert_case_flow(client, db):
     audit = client.get("/api/v1/audit", headers=headers)
     assert audit.status_code == 200
     assert len(audit.json()) > 0
+
+
+def test_transactions_include_risk_summary(client, db):
+    assessed = Transaction(txid="assessed-tx", timestamp=datetime.now(timezone.utc), total_output_sats=20_000_000)
+    assessed.outputs.append(TransactionOutput(vout=0, address="bcrt1assessed", amount_sats=20_000_000))
+    pending = Transaction(txid="unassessed-tx", timestamp=datetime.now(timezone.utc), total_output_sats=1_000)
+    db.add_all([assessed, pending])
+    db.commit()
+    db.refresh(assessed)
+
+    headers = {"Authorization": f"Bearer {login(client)}"}
+    client.get(f"/api/v1/transactions/{assessed.id}/risk", headers=headers)
+
+    listing = client.get("/api/v1/transactions", headers=headers)
+    assert listing.status_code == 200, listing.text
+    by_txid = {tx["txid"]: tx for tx in listing.json()}
+    assert by_txid["assessed-tx"]["risk"] == {"score": 30, "level": "MEDIUM"}
+    assert by_txid["unassessed-tx"]["risk"] is None
+
+    activity = client.get("/api/v1/dashboard/activity", headers=headers)
+    assert activity.status_code == 200, activity.text
+    levels = {tx["txId"]: tx["riskLevel"] for tx in activity.json()["recentTransactions"]}
+    assert levels == {"assessed-tx": "medium", "unassessed-tx": "low"}

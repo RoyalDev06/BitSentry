@@ -1,13 +1,13 @@
 import type { CaseDetail, CaseStatus } from '../types/cases';
 import { mockCases } from '../mocks/cases';
-import { api } from './api';
+import { api, toUtcIso, USE_MOCKS } from './api';
 import {
+  toFrontendAlert,
   toFrontendCase,
   toBackendCaseStatus,
+  type BackendAlert,
   type BackendCase,
 } from './adapters';
-
-const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
 
 const mockMode = () =>
   new URLSearchParams(window.location.search).get('mock');
@@ -52,8 +52,14 @@ export async function getCaseById(id: string): Promise<CaseDetail> {
       id: String(n.id),
       author: `User #${n.author_id}`,
       body: n.note,
-      createdAt: n.created_at,
+      createdAt: toUtcIso(n.created_at),
     }));
+  }
+  if (raw.alert_ids?.length) {
+    const alerts = await Promise.all(
+      raw.alert_ids.map((alertId) => api.get<BackendAlert>(`/alerts/${alertId}`))
+    );
+    caseDetail.relatedAlerts = alerts.map(toFrontendAlert);
   }
   return caseDetail;
 }

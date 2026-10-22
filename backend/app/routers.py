@@ -450,7 +450,7 @@ def dashboard_activity(db: Session = Depends(get_db), _: User = Depends(require_
                 "id": str(tx.id),
                 "txId": tx.txid,
                 "amountBtc": round((tx.total_output_sats or 0) / 100_000_000, 8),
-                "riskLevel": "low",
+                "riskLevel": (tx.risk.level if tx.risk else "LOW").lower(),
                 "timestamp": tx.timestamp.isoformat() if tx.timestamp else "",
                 "activityType": "transaction",
             }

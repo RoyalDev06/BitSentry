@@ -17,6 +17,7 @@ import type {
   CasePriority,
   CaseStatus,
 } from '../types/cases';
+import { toUtcIso } from './api';
 
 // ==========================================
 // 1. Alerts Adapters
@@ -68,7 +69,7 @@ export function toFrontendAlert(raw: BackendAlert): Alert {
     riskLevel,
     indicator,
     status,
-    createdAt: raw.created_at,
+    createdAt: toUtcIso(raw.created_at),
   };
 }
 
@@ -105,11 +106,12 @@ export interface BackendTransaction {
   is_coinbase: boolean;
   inputs?: BackendTransactionInput[];
   outputs?: BackendTransactionOutput[];
+  risk?: { score: number; level: string } | null;
 }
 
 export function toFrontendTransaction(
   raw: BackendTransaction,
-  riskAssessment?: { score?: number; level?: string }
+  riskAssessment: { score?: number; level?: string } | null | undefined = raw.risk
 ): Transaction {
   const fromAddress = raw.is_coinbase
     ? 'Coinbase (Mined)'
@@ -139,7 +141,7 @@ export function toFrontendTransaction(
     amountBtc,
     riskLevel,
     status,
-    timestamp: raw.timestamp,
+    timestamp: toUtcIso(raw.timestamp),
     fromAddress,
     toAddress,
     riskScore,
@@ -167,8 +169,8 @@ export function toFrontendAddress(raw: BackendAddress): BitcoinAddress {
     balance: 0,
     transactionCount: 0,
     risk: raw.is_watchlisted ? 'high' : 'low',
-    firstSeen: raw.created_at,
-    lastActivity: raw.created_at,
+    firstSeen: toUtcIso(raw.created_at),
+    lastActivity: toUtcIso(raw.created_at),
   };
 }
 
@@ -214,8 +216,14 @@ export function toFrontendDashboardActivity(
   raw: Partial<DashboardActivity>
 ): DashboardActivity {
   return {
-    recentTransactions: raw.recentTransactions || [],
-    recentAlerts: raw.recentAlerts || [],
+    recentTransactions: (raw.recentTransactions || []).map((tx) => ({
+      ...tx,
+      timestamp: toUtcIso(tx.timestamp),
+    })),
+    recentAlerts: (raw.recentAlerts || []).map((alert) => ({
+      ...alert,
+      createdAt: toUtcIso(alert.createdAt),
+    })),
   };
 }
 
@@ -262,8 +270,8 @@ export function toFrontendCase(raw: BackendCase): CaseDetail {
     status,
     priority,
     assignedTo: raw.assigned_to ? `User #${raw.assigned_to}` : null,
-    createdAt: raw.created_at,
-    updatedAt: raw.updated_at,
+    createdAt: toUtcIso(raw.created_at),
+    updatedAt: toUtcIso(raw.updated_at),
     relatedAlerts: [],
     relatedTransactions: [],
     relatedAddresses: [],
