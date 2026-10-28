@@ -3,11 +3,15 @@ import {
   LayoutDashboard,
   TriangleAlert,
   ArrowLeftRight,
+  Hash,
   Wallet,
   FolderSearch,
+  History,
+  Users,
   Settings,
   X,
 } from "lucide-react";
+import BitSentryLogo from "../ui/BitSentryLogo";
 
 const navigation = [
   {
@@ -28,6 +32,11 @@ const navigation = [
   {
     name: "Addresses",
     path: "/addresses",
+    icon: Hash,
+  },
+  {
+    name: "Monitored Wallets",
+    path: "/wallets",
     icon: Wallet,
   },
   {
@@ -36,9 +45,14 @@ const navigation = [
     icon: FolderSearch,
   },
   {
-    name: "Settings",
-    path: "/settings",
-    icon: Settings,
+    name: "Audit Trail",
+    path: "/audit",
+    icon: History,
+  },
+  {
+    name: "User Management",
+    path: "/users",
+    icon: Users,
   },
 ];
 
@@ -61,17 +75,20 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border-subtle bg-background-card transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border-subtle bg-background-card transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
-        <div className="flex items-start justify-between border-b border-border-subtle p-6">
-          <div>
-            <h1 className="text-xl font-bold text-brand-orange">BitSentry</h1>
-
-            <p className="mt-1 text-xs text-text-secondary">
-              AML Investigation Platform
-            </p>
+        <div className="flex items-start justify-between border-b border-border-subtle p-5">
+          <div className="flex items-center gap-3">
+            <BitSentryLogo className="h-8 w-8 shrink-0" />
+            <div>
+              <h1 className="text-lg font-bold text-brand-orange leading-tight">
+                BitSentry
+              </h1>
+              <p className="text-[11px] text-text-secondary">
+                AML Investigation Platform
+              </p>
+            </div>
           </div>
 
           <button
@@ -94,10 +111,9 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-brand-teal/10 text-brand-teal"
-                      : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
+                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
+                    ? "bg-brand-teal/10 text-brand-teal"
+                    : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
                   }`
                 }
               >
@@ -109,7 +125,10 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         <div className="border-t border-border-subtle p-4">
-          <p className="text-xs text-text-secondary">BitSentry AML</p>
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-brand-teal" />
+            <p className="text-xs text-text-secondary">BitSentry AML v1.0</p>
+          </div>
         </div>
       </aside>
     </>

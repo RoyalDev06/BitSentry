@@ -105,6 +105,11 @@ export interface BackendTransaction {
   is_coinbase: boolean;
   inputs?: BackendTransactionInput[];
   outputs?: BackendTransactionOutput[];
+  risk?: {
+    score: number;
+    level: string;
+    explanation?: string;
+  } | null;
 }
 
 export function toFrontendTransaction(
@@ -121,10 +126,10 @@ export function toFrontendTransaction(
   const amountBtc = Number(((raw.total_output_sats || 0) / 1e8).toFixed(8));
 
   const riskLevel = (
-    riskAssessment?.level || 'low'
+    riskAssessment?.level || raw.risk?.level || 'low'
   ).toLowerCase() as TransactionRiskLevel;
 
-  const riskScore = riskAssessment?.score ?? 0;
+  const riskScore = riskAssessment?.score ?? raw.risk?.score ?? 0;
 
   let status: TransactionStatus = 'confirmed';
   if (raw.block_height === null) {

@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import BitSentryLogo from "../ui/BitSentryLogo";
 
 function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -13,19 +14,24 @@ function AppLayout() {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center border-b border-border-subtle bg-background-card px-4 py-3 lg:hidden">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="rounded-lg p-2 text-text-secondary hover:bg-background-hover hover:text-brand-teal"
-            aria-label="Open navigation"
-          >
-            <Menu size={22} />
-          </button>
+        <div className="flex items-center justify-between border-b border-border-subtle bg-background-card px-4 py-3 lg:hidden">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="rounded-lg p-2 text-text-secondary hover:bg-background-hover hover:text-brand-teal"
+              aria-label="Open navigation"
+            >
+              <Menu size={22} />
+            </button>
 
-          <span className="ml-3 font-semibold text-text-primary">
-            BitSentry
-          </span>
+            <div className="flex items-center gap-2">
+              <BitSentryLogo className="h-6 w-6" />
+              <span className="font-bold text-brand-orange">
+                BitSentry
+              </span>
+            </div>
+          </div>
         </div>
 
         <Header />

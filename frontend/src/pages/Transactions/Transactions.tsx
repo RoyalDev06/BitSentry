@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import TransactionDetails from "../../components/transactions/TransactionDetails";
 import TransactionFilters from "../../components/transactions/TransactionFilters";
 import TransactionTable from "../../components/transactions/TransactionTable";
@@ -11,6 +12,9 @@ import type {
 } from "../../types/transactions";
 
 function Transactions() {
+  const [searchParams] = useSearchParams();
+  const urlTxId = searchParams.get("txid");
+
   const { data: transactions = [], isLoading, isError, refetch } = useTransactions();
 
   const [search, setSearch] = useState("");
@@ -21,6 +25,17 @@ function Transactions() {
 
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
+
+  useEffect(() => {
+    if (urlTxId && transactions.length > 0) {
+      const match = transactions.find(
+        (t) => t.txId.toLowerCase() === urlTxId.toLowerCase()
+      );
+      if (match) {
+        setSelectedTransaction(match);
+      }
+    }
+  }, [urlTxId, transactions]);
 
   const filteredTransactions = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
