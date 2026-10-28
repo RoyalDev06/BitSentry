@@ -21,13 +21,13 @@ BitSentry AML helps analysts monitor Bitcoin activity, identify potentially susp
 | **Lucide React** | Icons |
 | **TanStack Query** | Server-state/API management |
 | **Zustand** | Client-side state management |
-| **React Hook Form** | Form handling |
-| **Zod** | Validation |
 | **Recharts** | Data visualization |
 | **TanStack Table** | Data tables |
-| **Vitest** | Unit testing |
-| **React Testing Library** | Component testing |
-| **MSW** | API mocking during development |
+| **React Hook Form** | Form handling (planned) |
+| **Zod** | Validation schemas (planned) |
+| **Vitest** | Unit testing (planned) |
+| **React Testing Library** | Component testing (planned) |
+| **MSW** | API mocking during development (planned) |
 
 ---
 
@@ -40,6 +40,7 @@ frontend/
 │   ├── components/
 │   │   ├── ui/
 │   │   ├── layout/
+│   │   ├── auth/
 │   │   ├── dashboard/
 │   │   ├── alerts/
 │   │   ├── transactions/
@@ -49,13 +50,17 @@ frontend/
 │   ├── hooks/
 │   ├── mocks/
 │   ├── pages/
+│   │   ├── Auth/
 │   │   ├── Dashboard/
 │   │   ├── Alerts/
 │   │   ├── Transactions/
 │   │   ├── Addresses/
+│   │   ├── Wallets/
 │   │   ├── Cases/
-│   │   ├── Reports/
+│   │   ├── Audit/
+│   │   ├── Users/
 │   │   └── Settings/
+
 │   │
 │   ├── routes/
 │   ├── services/

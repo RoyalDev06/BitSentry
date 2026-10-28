@@ -60,3 +60,19 @@ export function logout(): void {
   clearAuthToken();
   window.location.href = '/login';
 }
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}
+
+export async function changePassword(
+  payload: ChangePasswordRequest
+): Promise<{ message: string }> {
+  if (USE_MOCKS) {
+    await new Promise((r) => setTimeout(r, 400));
+    return { message: "Password updated successfully" };
+  }
+  return api.post<{ message: string }>('/auth/change-password', payload);
+}
+
