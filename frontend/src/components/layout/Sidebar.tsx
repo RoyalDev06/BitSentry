@@ -8,7 +8,6 @@ import {
   FolderSearch,
   History,
   Users,
-  Settings,
   X,
 } from "lucide-react";
 import BitSentryLogo from "../ui/BitSentryLogo";
