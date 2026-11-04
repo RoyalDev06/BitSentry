@@ -5,7 +5,6 @@ import {
   ArrowLeftRight,
   Wallet,
   FolderSearch,
-  Settings,
   X,
 } from "lucide-react";
 
@@ -35,11 +34,7 @@ const navigation = [
     path: "/cases",
     icon: FolderSearch,
   },
-  {
-    name: "Settings",
-    path: "/settings",
-    icon: Settings,
-  },
+
 ];
 
 interface SidebarProps {
@@ -61,9 +56,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border-subtle bg-background-card transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border-subtle bg-background-card transition-transform duration-200 lg:static lg:z-auto lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-start justify-between border-b border-border-subtle p-6">
           <div>
@@ -94,10 +88,9 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
                 to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-brand-teal/10 text-brand-teal"
-                      : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
+                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive
+                    ? "bg-brand-teal/10 text-brand-teal"
+                    : "text-text-secondary hover:bg-background-hover hover:text-text-primary"
                   }`
                 }
               >
