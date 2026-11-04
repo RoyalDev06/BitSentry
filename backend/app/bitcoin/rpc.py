@@ -1,5 +1,7 @@
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
+
 import requests
+
 from app.config import settings
 
 

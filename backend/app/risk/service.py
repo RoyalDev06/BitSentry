@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from app.detection.service import analyze_transaction
 from app.models import Transaction
 

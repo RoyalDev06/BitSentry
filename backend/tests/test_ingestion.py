@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
 from unittest.mock import patch
+
 from app.bitcoin.ingestion import ingest_block
-from app.models import Transaction, Block
+from app.models import Block, Transaction
 
 
 def test_ingest_block_with_mocked_rpc(db):
@@ -11,13 +12,23 @@ def test_ingest_block_with_mocked_rpc(db):
         "time": int(datetime.now(timezone.utc).timestamp()),
         "previousblockhash": "00prev",
         "tx": [
-            {"txid": "coinbase-tx", "vin": [{"coinbase": "abcd"}], "vout": [{"value": 50, "scriptPubKey": {"type": "witness_v1_taproot", "address": "bcrt1miner"}}]},
+            {
+                "txid": "coinbase-tx",
+                "vin": [{"coinbase": "abcd"}],
+                "vout": [{"value": 50, "scriptPubKey": {"type": "witness_v1_taproot", "address": "bcrt1miner"}}],
+            },
         ],
     }
+
     class FakeRPC:
-        def get_block_hash(self, height): return "00block"
-        def get_block(self, block_hash): return block
-        def get_raw_transaction(self, txid): raise AssertionError("coinbase must not fetch previous transaction")
+        def get_block_hash(self, height):
+            return "00block"
+
+        def get_block(self, block_hash):
+            return block
+
+        def get_raw_transaction(self, txid):
+            raise AssertionError("coinbase must not fetch previous transaction")
 
     with patch("app.bitcoin.ingestion.BitcoinRPC", FakeRPC):
         row, count = ingest_block(db, 1, auto_risk=True)

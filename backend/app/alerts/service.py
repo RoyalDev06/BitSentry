@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
 from app.config import settings
 from app.models import Alert, RiskAssessment
 
@@ -17,7 +18,9 @@ def create_alert_for_risk(db: Session, assessment: RiskAssessment) -> Alert | No
         risk_assessment_id=assessment.id,
         risk_score=assessment.score,
         risk_level=assessment.level,
-        indicators=[{"code": i.code, "name": i.name, "severity": i.severity, "score": i.score} for i in assessment.indicators],
+        indicators=[
+            {"code": i.code, "name": i.name, "severity": i.severity, "score": i.score} for i in assessment.indicators
+        ],
         status="OPEN",
     )
     db.add(alert)

@@ -64,6 +64,6 @@ export async function getDashboardActivity(): Promise<DashboardActivity> {
     });
   }
 
-  const raw = await api.get<any>('/dashboard/activity');
+  const raw = await api.get<Partial<DashboardActivity>>('/dashboard/activity');
   return toFrontendDashboardActivity(raw);
 }

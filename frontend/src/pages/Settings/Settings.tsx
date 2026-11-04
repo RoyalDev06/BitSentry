@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   User,
   Shield,
@@ -45,7 +45,9 @@ export default function Settings() {
 
   const savedPrefs = getInitialPreferences();
 
-  const [fullName, setFullName] = useState("");
+  const [fullName, setFullName] = useState(
+    user?.full_name || "Lead Compliance Analyst"
+  );
   const [language, setLanguage] = useState(savedPrefs.language || "English");
   const [timezone, setTimezone] = useState(savedPrefs.timezone || "EAT");
   const [notifications, setNotifications] = useState<NotificationSettings>(
@@ -60,14 +62,13 @@ export default function Settings() {
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  // Sync with real authenticated user when loaded
-  useEffect(() => {
-    if (user?.full_name) {
-      setFullName(user.full_name);
-    } else if (!fullName) {
-      setFullName("Lead Compliance Analyst");
-    }
-  }, [user?.full_name]);
+  // Sync with real authenticated user when loaded (adjusting state during
+  // render instead of in an effect avoids an extra cascading render)
+  const [syncedName, setSyncedName] = useState<string | undefined>();
+  if (user?.full_name && user.full_name !== syncedName) {
+    setSyncedName(user.full_name);
+    setFullName(user.full_name);
+  }
 
   const handleSave = () => {
     setIsSaving(true);

@@ -1,18 +1,41 @@
 # pyrefly: ignore [missing-import]
 from sqlalchemy import select
+
+from app.config import settings
 from app.models import Permission, Role, User
 from app.security import hash_password
-from app.config import settings
 
 PERMISSIONS = [
-    "admin:all", "users:write", "bitcoin:read", "bitcoin:write", "transactions:read",
-    "risk:read", "alerts:read", "alerts:write", "cases:read", "cases:write",
-    "addresses:read", "addresses:write", "wallets:read", "wallets:write", "audit:read",
+    "admin:all",
+    "users:write",
+    "bitcoin:read",
+    "bitcoin:write",
+    "transactions:read",
+    "risk:read",
+    "alerts:read",
+    "alerts:write",
+    "cases:read",
+    "cases:write",
+    "addresses:read",
+    "addresses:write",
+    "wallets:read",
+    "wallets:write",
+    "audit:read",
 ]
 
 ROLE_PERMISSIONS = {
     "admin": PERMISSIONS,
-    "analyst": ["bitcoin:read", "transactions:read", "risk:read", "alerts:read", "alerts:write", "cases:read", "cases:write", "addresses:read", "wallets:read"],
+    "analyst": [
+        "bitcoin:read",
+        "transactions:read",
+        "risk:read",
+        "alerts:read",
+        "alerts:write",
+        "cases:read",
+        "cases:write",
+        "addresses:read",
+        "wallets:read",
+    ],
 }
 
 

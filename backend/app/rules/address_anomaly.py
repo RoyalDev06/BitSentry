@@ -1,4 +1,5 @@
 from sqlalchemy import select
+
 from app.config import settings
 from app.models import TransactionInput, TransactionOutput
 
@@ -20,6 +21,10 @@ def detect(db, transaction) -> dict | None:
         "name": "Address anomaly",
         "severity": "MEDIUM",
         "description": "An input address is associated with an unusually high number of distinct output counterparties.",
-        "evidence": {"input_addresses": sorted(addresses), "distinct_counterparties": len(counterparties), "threshold": settings.address_anomaly_counterparties},
+        "evidence": {
+            "input_addresses": sorted(addresses),
+            "distinct_counterparties": len(counterparties),
+            "threshold": settings.address_anomaly_counterparties,
+        },
         "score": 20,
     }

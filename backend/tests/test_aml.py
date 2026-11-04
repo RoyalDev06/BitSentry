@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+
 from app.models import Transaction, TransactionInput, TransactionOutput
 from app.risk.service import assess_transaction
 
@@ -29,8 +30,12 @@ def test_normal_transaction_is_low(db):
 
 
 def test_multiple_indicators_are_combined(db):
-    tx = Transaction(txid="fanout", timestamp=datetime.now(timezone.utc), total_input_sats=20_000_000, total_output_sats=20_000_000)
-    tx.inputs.append(TransactionInput(prev_txid="parent-fanout", prev_vout=0, address="bcrt1input", amount_sats=20_000_000))
+    tx = Transaction(
+        txid="fanout", timestamp=datetime.now(timezone.utc), total_input_sats=20_000_000, total_output_sats=20_000_000
+    )
+    tx.inputs.append(
+        TransactionInput(prev_txid="parent-fanout", prev_vout=0, address="bcrt1input", amount_sats=20_000_000)
+    )
     for i in range(10):
         tx.outputs.append(TransactionOutput(vout=i, address=f"bcrt1out{i}", amount_sats=2_000_000))
     db.add(tx)
@@ -45,12 +50,16 @@ def test_multiple_indicators_are_combined(db):
 
 def test_rapid_movement_uses_prior_output_address(db):
     from datetime import timedelta
+
     from app.models import Transaction, TransactionInput, TransactionOutput
+
     now = datetime.now(timezone.utc)
     previous = Transaction(txid="previous", timestamp=now - timedelta(minutes=2), total_output_sats=5_000_000)
     previous.outputs.append(TransactionOutput(vout=0, address="bcrt1rapid", amount_sats=5_000_000))
     current = Transaction(txid="current", timestamp=now, total_input_sats=5_000_000, total_output_sats=4_900_000)
-    current.inputs.append(TransactionInput(prev_txid="previous", prev_vout=0, address="bcrt1rapid", amount_sats=5_000_000))
+    current.inputs.append(
+        TransactionInput(prev_txid="previous", prev_vout=0, address="bcrt1rapid", amount_sats=5_000_000)
+    )
     current.outputs.append(TransactionOutput(vout=0, address="bcrt1dest", amount_sats=4_900_000))
     db.add_all([previous, current])
     db.commit()

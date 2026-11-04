@@ -1,6 +1,7 @@
 from sqlalchemy import select
+
 from app.config import settings
-from app.models import Transaction, TransactionInput, TransactionOutput
+from app.models import Transaction, TransactionOutput
 
 
 def detect(db, transaction) -> dict | None:

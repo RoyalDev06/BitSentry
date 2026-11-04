@@ -1,4 +1,3 @@
-
 def calculate_risk(indicators: list[dict]) -> tuple[int, str]:
     score = min(100, sum(int(i.get("score", 0)) for i in indicators))
     if score >= 80:

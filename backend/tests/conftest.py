@@ -8,7 +8,8 @@ os.environ["LARGE_VALUE_THRESHOLD_SATS"] = "10000000"
 
 import pytest
 from fastapi.testclient import TestClient
-from app.database import Base, engine, SessionLocal
+
+from app.database import Base, SessionLocal, engine
 from app.main import app
 
 
@@ -18,6 +19,7 @@ def db():
     Base.metadata.create_all(bind=engine)
     from app.auth.service import seed_auth
     from app.rules.service import seed_rules
+
     session = SessionLocal()
     seed_auth(session)
     seed_rules(session)

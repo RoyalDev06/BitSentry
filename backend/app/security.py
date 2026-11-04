@@ -3,15 +3,13 @@ import hashlib
 import hmac
 import os
 from datetime import datetime, timedelta, timezone
-# pyrefly: ignore [missing-import]
+
 import jwt
 # pyrefly: ignore [missing-import]
 from fastapi import Depends, HTTPException, status
-# pyrefly: ignore [missing-import]
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-# pyrefly: ignore [missing-import]
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+
 from app.config import settings
 from app.database import get_db
 from app.models import User
@@ -66,4 +64,5 @@ def require_permission(permission_code: str):
         if "admin:all" not in codes and permission_code not in codes:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Permission denied")
         return user
+
     return dependency

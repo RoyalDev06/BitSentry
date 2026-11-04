@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-from app.models import Address, Block, Transaction, TransactionInput, TransactionOutput
+
 from app.bitcoin.rpc import BitcoinRPC, amount_to_sats
+from app.models import Address, Block, Transaction, TransactionInput, TransactionOutput
 
 
 def _script_address(script: dict) -> str | None:
@@ -22,9 +24,9 @@ def _get_prev_output(rpc: BitcoinRPC, prev_txid: str, prev_vout: int):
 
 
 def ingest_block(db: Session, height: int, auto_risk: bool = True):
-    from app.risk.service import assess_transaction
     from app.alerts.service import create_alert_for_risk
     from app.config import settings
+    from app.risk.service import assess_transaction
 
     if height < 0:
         raise ValueError("Block height cannot be negative")
@@ -65,7 +67,9 @@ def ingest_block(db: Session, height: int, auto_risk: bool = True):
                     prev_output = _get_prev_output(rpc, prev_txid, prev_vout)
                 amount = amount_to_sats(prev_output.get("value", 0)) if prev_output else 0
                 address = _script_address((prev_output or {}).get("scriptPubKey", {}))
-                inputs.append(TransactionInput(prev_txid=prev_txid, prev_vout=prev_vout, address=address, amount_sats=amount))
+                inputs.append(
+                    TransactionInput(prev_txid=prev_txid, prev_vout=prev_vout, address=address, amount_sats=amount)
+                )
                 total_in += amount
 
         outputs = []
@@ -73,7 +77,14 @@ def ingest_block(db: Session, height: int, auto_risk: bool = True):
         for index, output in enumerate(vout):
             amount = amount_to_sats(output.get("value", 0))
             address = _script_address(output.get("scriptPubKey", {}))
-            outputs.append(TransactionOutput(vout=index, address=address, amount_sats=amount, script_type=output.get("scriptPubKey", {}).get("type")))
+            outputs.append(
+                TransactionOutput(
+                    vout=index,
+                    address=address,
+                    amount_sats=amount,
+                    script_type=output.get("scriptPubKey", {}).get("type"),
+                )
+            )
             total_out += amount
 
         tx = Transaction(
@@ -121,4 +132,9 @@ def sync_to_tip(db: Session, start_height: int | None = None):
         _, count = ingest_block(db, height)
         processed += 1
         transactions += count
-    return {"from_height": start_height, "to_height": tip, "blocks_processed": processed, "transactions_processed": transactions}
+    return {
+        "from_height": start_height,
+        "to_height": tip,
+        "blocks_processed": processed,
+        "transactions_processed": transactions,
+    }

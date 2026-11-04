@@ -3,25 +3,25 @@ Seed script to populate realistic Bitcoin transactions, addresses, alerts, and c
 for development and testing without needing a live Bitcoin node.
 """
 
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
-# pyrefly: ignore [missing-import]
 from sqlalchemy import select
-from app.database import SessionLocal, Base, engine
+
+from app.alerts.service import create_alert_for_risk, generate_alerts
+from app.auth.service import seed_auth
+from app.database import Base, SessionLocal, engine
 from app.models import (
-    Transaction,
-    TransactionInput,
-    TransactionOutput,
     Address,
     Case,
     CaseAlert,
     InvestigationNote,
+    Transaction,
+    TransactionInput,
+    TransactionOutput,
     User,
 )
-from app.auth.service import seed_auth
-from app.rules.service import seed_rules
 from app.risk.service import assess_transaction
-from app.alerts.service import create_alert_for_risk, generate_alerts
+from app.rules.service import seed_rules
 
 
 def seed():
@@ -74,9 +74,22 @@ def seed():
                 fee_sats=50_000,
                 is_coinbase=False,
             )
-            tx1.inputs.append(TransactionInput(prev_txid="0000000000000000000000000000000000000000000000000000000000000001", prev_vout=0, address=addr1, amount_sats=150_000_000))
-            tx1.outputs.append(TransactionOutput(vout=0, address=addr_suspicious, amount_sats=140_000_000, script_type="witness_v0_keyhash"))
-            tx1.outputs.append(TransactionOutput(vout=1, address=addr2, amount_sats=9_950_000, script_type="witness_v0_keyhash"))
+            tx1.inputs.append(
+                TransactionInput(
+                    prev_txid="0000000000000000000000000000000000000000000000000000000000000001",
+                    prev_vout=0,
+                    address=addr1,
+                    amount_sats=150_000_000,
+                )
+            )
+            tx1.outputs.append(
+                TransactionOutput(
+                    vout=0, address=addr_suspicious, amount_sats=140_000_000, script_type="witness_v0_keyhash"
+                )
+            )
+            tx1.outputs.append(
+                TransactionOutput(vout=1, address=addr2, amount_sats=9_950_000, script_type="witness_v0_keyhash")
+            )
             db.add(tx1)
 
             # 2. Normal retail transaction
@@ -90,7 +103,9 @@ def seed():
                 is_coinbase=False,
             )
             tx2.inputs.append(TransactionInput(prev_txid=tx1.txid, prev_vout=1, address=addr2, amount_sats=5_000_000))
-            tx2.outputs.append(TransactionOutput(vout=0, address=addr_exchange, amount_sats=4_980_000, script_type="scripthash"))
+            tx2.outputs.append(
+                TransactionOutput(vout=0, address=addr_exchange, amount_sats=4_980_000, script_type="scripthash")
+            )
             db.add(tx2)
 
             # 3. Suspicious Peel Chain / Rapid Movement transaction
@@ -103,9 +118,15 @@ def seed():
                 fee_sats=40_000,
                 is_coinbase=False,
             )
-            tx3.inputs.append(TransactionInput(prev_txid=tx1.txid, prev_vout=0, address=addr_suspicious, amount_sats=85_000_000))
-            tx3.outputs.append(TransactionOutput(vout=0, address=addr1, amount_sats=75_000_000, script_type="witness_v0_keyhash"))
-            tx3.outputs.append(TransactionOutput(vout=1, address=addr2, amount_sats=9_960_000, script_type="witness_v0_keyhash"))
+            tx3.inputs.append(
+                TransactionInput(prev_txid=tx1.txid, prev_vout=0, address=addr_suspicious, amount_sats=85_000_000)
+            )
+            tx3.outputs.append(
+                TransactionOutput(vout=0, address=addr1, amount_sats=75_000_000, script_type="witness_v0_keyhash")
+            )
+            tx3.outputs.append(
+                TransactionOutput(vout=1, address=addr2, amount_sats=9_960_000, script_type="witness_v0_keyhash")
+            )
             db.add(tx3)
 
             # 4. Coinbase block reward transaction
@@ -118,7 +139,9 @@ def seed():
                 fee_sats=0,
                 is_coinbase=True,
             )
-            tx4.outputs.append(TransactionOutput(vout=0, address=addr1, amount_sats=312_500_000, script_type="witness_v0_keyhash"))
+            tx4.outputs.append(
+                TransactionOutput(vout=0, address=addr1, amount_sats=312_500_000, script_type="witness_v0_keyhash")
+            )
             db.add(tx4)
 
             # 5. Pending unconfirmed transaction
@@ -132,7 +155,11 @@ def seed():
                 is_coinbase=False,
             )
             tx5.inputs.append(TransactionInput(prev_txid=tx3.txid, prev_vout=0, address=addr1, amount_sats=25_000_000))
-            tx5.outputs.append(TransactionOutput(vout=0, address=addr_suspicious, amount_sats=24_975_000, script_type="witness_v0_keyhash"))
+            tx5.outputs.append(
+                TransactionOutput(
+                    vout=0, address=addr_suspicious, amount_sats=24_975_000, script_type="witness_v0_keyhash"
+                )
+            )
             db.add(tx5)
 
             db.commit()
@@ -170,7 +197,13 @@ def seed():
             if alerts:
                 db.add(CaseAlert(case_id=case1.id, alert_id=alerts[0]))
 
-            db.add(InvestigationNote(case_id=case1.id, author_id=admin.id, note="Flagged during routine AML threshold review. Counterparty address appears on sanction watchlist."))
+            db.add(
+                InvestigationNote(
+                    case_id=case1.id,
+                    author_id=admin.id,
+                    note="Flagged during routine AML threshold review. Counterparty address appears on sanction watchlist.",
+                )
+            )
             db.commit()
             print(f"[+] Created Case #{case1.id}")
 

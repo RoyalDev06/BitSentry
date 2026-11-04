@@ -1,11 +1,22 @@
 from datetime import datetime, timezone
-# pyrefly: ignore [missing-import, parse-error]
+
 from sqlalchemy import (
-    String, Integer, BigInteger, Boolean, DateTime, ForeignKey, Text,
-    UniqueConstraint, JSON, Table, Column, Index
+    JSON,
+    BigInteger,
+    Boolean,
+    Column,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Table,
+    Text,
+    UniqueConstraint,
 )
 # pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.database import Base
 
 
@@ -14,12 +25,14 @@ def utcnow() -> datetime:
 
 
 user_roles = Table(
-    "user_roles", Base.metadata,
+    "user_roles",
+    Base.metadata,
     Column("user_id", ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
     Column("role_id", ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True),
 )
 role_permissions = Table(
-    "role_permissions", Base.metadata,
+    "role_permissions",
+    Base.metadata,
     Column("role_id", ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True),
     Column("permission_id", ForeignKey("permissions.id", ondelete="CASCADE"), primary_key=True),
 )
@@ -41,7 +54,9 @@ class Role(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(80), unique=True, index=True)
     users: Mapped[list[User]] = relationship(secondary=user_roles, back_populates="roles")
-    permissions: Mapped[list["Permission"]] = relationship(secondary=role_permissions, back_populates="roles", lazy="selectin")
+    permissions: Mapped[list["Permission"]] = relationship(
+        secondary=role_permissions, back_populates="roles", lazy="selectin"
+    )
 
 
 class Permission(Base):
@@ -86,9 +101,15 @@ class Transaction(Base):
     raw_data: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     block: Mapped[Block | None] = relationship(back_populates="transactions")
-    inputs: Mapped[list["TransactionInput"]] = relationship(back_populates="transaction", cascade="all, delete-orphan", lazy="selectin")
-    outputs: Mapped[list["TransactionOutput"]] = relationship(back_populates="transaction", cascade="all, delete-orphan", lazy="selectin")
-    risk: Mapped["RiskAssessment | None"] = relationship(back_populates="transaction", uselist=False, cascade="all, delete-orphan", lazy="selectin")
+    inputs: Mapped[list["TransactionInput"]] = relationship(
+        back_populates="transaction", cascade="all, delete-orphan", lazy="selectin"
+    )
+    outputs: Mapped[list["TransactionOutput"]] = relationship(
+        back_populates="transaction", cascade="all, delete-orphan", lazy="selectin"
+    )
+    risk: Mapped["RiskAssessment | None"] = relationship(
+        back_populates="transaction", uselist=False, cascade="all, delete-orphan", lazy="selectin"
+    )
     __table_args__ = (Index("ix_transactions_block_height_timestamp", "block_height", "timestamp"),)
 
 
@@ -130,13 +151,17 @@ class Rule(Base):
 class RiskAssessment(Base):
     __tablename__ = "risk_assessments"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    transaction_id: Mapped[int] = mapped_column(ForeignKey("transactions.id", ondelete="CASCADE"), unique=True, index=True)
+    transaction_id: Mapped[int] = mapped_column(
+        ForeignKey("transactions.id", ondelete="CASCADE"), unique=True, index=True
+    )
     score: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     level: Mapped[str] = mapped_column(String(20), default="LOW", nullable=False)
     explanation: Mapped[str] = mapped_column(Text, default="", nullable=False)
     assessed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     transaction: Mapped[Transaction] = relationship(back_populates="risk")
-    indicators: Mapped[list["RiskIndicator"]] = relationship(back_populates="risk_assessment", cascade="all, delete-orphan", lazy="selectin")
+    indicators: Mapped[list["RiskIndicator"]] = relationship(
+        back_populates="risk_assessment", cascade="all, delete-orphan", lazy="selectin"
+    )
 
 
 class RiskIndicator(Base):
@@ -174,7 +199,9 @@ class Case(Base):
     assigned_to: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_by: Mapped[int] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
-    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow, nullable=False
+    )
 
 
 class CaseAlert(Base):

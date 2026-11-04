@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+
 from app.models import Transaction, TransactionOutput
 
 
@@ -27,14 +28,18 @@ def test_end_to_end_risk_alert_case_flow(client, db):
     alert_ids = generated.json()["created_alert_ids"]
     assert len(alert_ids) == 1
 
-    case = client.post("/api/v1/cases", headers=headers, json={"title": "Review suspicious transaction", "priority": "MEDIUM"})
+    case = client.post(
+        "/api/v1/cases", headers=headers, json={"title": "Review suspicious transaction", "priority": "MEDIUM"}
+    )
     assert case.status_code == 200, case.text
     case_id = case.json()["id"]
 
     attach = client.post(f"/api/v1/cases/{case_id}/alerts/{alert_ids[0]}", headers=headers)
     assert attach.status_code == 200
 
-    note = client.post(f"/api/v1/cases/{case_id}/notes", headers=headers, json={"note": "Initial analyst review completed."})
+    note = client.post(
+        f"/api/v1/cases/{case_id}/notes", headers=headers, json={"note": "Initial analyst review completed."}
+    )
     assert note.status_code == 200
 
     status = client.patch(f"/api/v1/cases/{case_id}/status", headers=headers, json={"status": "IN_PROGRESS"})

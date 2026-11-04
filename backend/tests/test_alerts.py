@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+
+from app.alerts.service import create_alert_for_risk
 from app.models import Transaction, TransactionOutput
 from app.risk.service import assess_transaction
-from app.alerts.service import create_alert_for_risk
 
 
 def test_alert_created_once_for_high_enough_risk(db):

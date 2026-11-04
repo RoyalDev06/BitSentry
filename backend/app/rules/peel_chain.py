@@ -14,6 +14,10 @@ def detect(transaction) -> dict | None:
         "name": "Possible peel-chain pattern",
         "severity": "MEDIUM",
         "description": "Two outputs exist and one dominates the value while a smaller output remains.",
-        "evidence": {"output_amounts_sats": amounts, "dominant_output_ratio": round(ratio, 4), "configured_ratio": settings.peel_dominant_ratio},
+        "evidence": {
+            "output_amounts_sats": amounts,
+            "dominant_output_ratio": round(ratio, 4),
+            "configured_ratio": settings.peel_dominant_ratio,
+        },
         "score": 25,
     }

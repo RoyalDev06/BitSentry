@@ -1,4 +1,5 @@
 from sqlalchemy import select
+
 from app.models import Case, CaseActivity, CaseAlert, InvestigationNote
 
 CASE_STATUSES = {"OPEN", "IN_PROGRESS", "ESCALATED", "CLOSED"}
@@ -15,6 +16,10 @@ def case_payload(db, case_id):
         return None
     alerts = db.scalars(select(CaseAlert).where(CaseAlert.case_id == case_id)).all()
     alert_ids = [item.alert_id for item in alerts]
-    notes = db.scalars(select(InvestigationNote).where(InvestigationNote.case_id == case_id).order_by(InvestigationNote.created_at)).all()
-    activity = db.scalars(select(CaseActivity).where(CaseActivity.case_id == case_id).order_by(CaseActivity.created_at)).all()
+    notes = db.scalars(
+        select(InvestigationNote).where(InvestigationNote.case_id == case_id).order_by(InvestigationNote.created_at)
+    ).all()
+    activity = db.scalars(
+        select(CaseActivity).where(CaseActivity.case_id == case_id).order_by(CaseActivity.created_at)
+    ).all()
     return {"case": row, "alert_ids": alert_ids, "notes": notes, "activity": activity}

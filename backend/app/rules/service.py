@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
 from app.config import settings
 from app.models import Rule
 from app.rules.definitions import RULE_DEFINITIONS
@@ -18,5 +19,14 @@ def seed_rules(db: Session) -> None:
     }
     for code, (name, description, score) in RULE_DEFINITIONS.items():
         if code not in existing:
-            db.add(Rule(code=code, name=name, description=description, score=score, threshold=thresholds.get(code), enabled=True))
+            db.add(
+                Rule(
+                    code=code,
+                    name=name,
+                    description=description,
+                    score=score,
+                    threshold=thresholds.get(code),
+                    enabled=True,
+                )
+            )
     db.commit()
