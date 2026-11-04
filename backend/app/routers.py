@@ -1,5 +1,8 @@
+# pyrefly: ignore [missing-import]
 from fastapi import APIRouter, Depends, HTTPException, Query
+# pyrefly: ignore [missing-import]
 from sqlalchemy import func, select
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Session
 
 from app.alerts.service import ALERT_STATUSES, create_alert_for_risk, generate_alerts
@@ -62,6 +65,18 @@ def me(user: User = Depends(get_current_user)):
     }
 
 
+@router.post("/auth/change-password")
+def change_password(payload: PasswordChangeRequest, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    user = db.get(User, current_user.id)
+    if not user or not verify_password(payload.current_password, user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    user.password_hash = hash_password(payload.new_password)
+    record_audit(db, user.id, "USER_PASSWORD_CHANGED", "user", user.id, {})
+    db.commit()
+    return {"message": "Password updated successfully"}
+
+
+
 @router.post("/users", response_model=UserOut)
 def create_user(
     payload: UserCreate, db: Session = Depends(get_db), actor: User = Depends(require_permission("users:write"))
@@ -85,6 +100,13 @@ def create_user(
         "roles": [role.name],
         "is_active": user.is_active,
     }
+
+
+@router.get("/users", response_model=list[UserOut])
+def list_users(db: Session = Depends(get_db), _: User = Depends(require_permission("users:write"))):
+    rows = db.scalars(select(User).order_by(User.id.asc())).all()
+    return [{"id": u.id, "email": u.email, "full_name": u.full_name, "roles": [r.name for r in u.roles], "is_active": u.is_active} for u in rows]
+
 
 
 @router.get("/bitcoin/status")

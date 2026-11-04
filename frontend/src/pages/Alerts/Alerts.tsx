@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useAlerts, useUpdateAlertStatus } from "../../hooks/useAlerts";
 import StateView from "../../components/dashboard/StateView";
 import RiskBadge from "../../components/ui/RiskBadge";
@@ -19,6 +20,9 @@ const statusClasses: Record<AlertStatus, string> = {
 };
 
 function Alerts() {
+  const [searchParams] = useSearchParams();
+  const urlAlertId = searchParams.get("id");
+
   const { data: alerts = [], isLoading, isError, refetch } = useAlerts();
   const updateStatusMutation = useUpdateAlertStatus();
 
@@ -27,13 +31,24 @@ function Alerts() {
     "all"
   );
 
-const [riskFilter, setRiskFilter] = useState<
-  "all" | "low" | "medium" | "high" | "critical"
->("all");
+  const [riskFilter, setRiskFilter] = useState<
+    "all" | "low" | "medium" | "high" | "critical"
+  >("all");
 
-const [selectedAlertId, setSelectedAlertId] = useState<string | null>(
-  null
-);
+  const [selectedAlertId, setSelectedAlertId] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (urlAlertId && alerts.length > 0) {
+      const match = alerts.find(
+        (a) => a.id.toLowerCase() === urlAlertId.toLowerCase()
+      );
+      if (match) {
+        setSelectedAlertId(match.id);
+      }
+    }
+  }, [urlAlertId, alerts]);
 
   const totalAlerts = alerts.length;
 

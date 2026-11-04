@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from sqlalchemy import select
 
 from app.config import settings

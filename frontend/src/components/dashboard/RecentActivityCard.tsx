@@ -48,9 +48,8 @@ export default function RecentActivityCard() {
                   className="transition-colors hover:bg-background-hover"
                 >
                   <td className="py-3 pr-4">
-                    {/* TODO: link to detail route when it exists */}
                     <Link
-                      to="/transactions"
+                      to={`/transactions?txid=${encodeURIComponent(t.txId)}`}
                       className="font-mono text-xs text-brand-teal hover:underline"
                     >
                       {truncateTxId(t.txId)}

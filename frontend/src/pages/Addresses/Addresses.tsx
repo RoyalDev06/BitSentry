@@ -35,7 +35,7 @@ function Addresses() {
         </h1>
 
         <p className="mt-1 text-sm text-text-secondary">
-          Investigate Bitcoin addresses and wallet activity.
+          Investigate external on-chain Bitcoin addresses, counterparty fan-outs, and watchlists.
         </p>
       </header>
 
