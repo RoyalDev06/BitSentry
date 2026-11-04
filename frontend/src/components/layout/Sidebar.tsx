@@ -6,11 +6,8 @@ import {
   Hash,
   Wallet,
   FolderSearch,
-<<<<<<< HEAD
-=======
   History,
   Users,
->>>>>>> 67dfa978fc26ee248dae4602bc850bac0ded0815
   X,
 } from "lucide-react";
 import BitSentryLogo from "../ui/BitSentryLogo";
@@ -46,9 +43,6 @@ const navigation = [
     path: "/cases",
     icon: FolderSearch,
   },
-<<<<<<< HEAD
-
-=======
   {
     name: "Audit Trail",
     path: "/audit",
@@ -59,7 +53,6 @@ const navigation = [
     path: "/users",
     icon: Users,
   },
->>>>>>> 67dfa978fc26ee248dae4602bc850bac0ded0815
 ];
 
 interface SidebarProps {
