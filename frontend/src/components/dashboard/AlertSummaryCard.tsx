@@ -34,9 +34,8 @@ export default function AlertSummaryCard() {
         <ul className="divide-y divide-border-subtle">
           {alerts.map((a) => (
             <li key={a.id}>
-              {/* TODO: link to detail route when it exists */}
               <Link
-                to="/alerts"
+                to={`/alerts?id=${encodeURIComponent(a.id)}`}
                 className="flex items-center justify-between gap-3 py-3 transition-colors hover:bg-background-hover"
               >
                 <div className="min-w-0">

@@ -1,8 +1,10 @@
 from datetime import datetime, timezone
+# pyrefly: ignore [missing-import, parse-error]
 from sqlalchemy import (
     String, Integer, BigInteger, Boolean, DateTime, ForeignKey, Text,
     UniqueConstraint, JSON, Table, Column, Index
 )
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
 

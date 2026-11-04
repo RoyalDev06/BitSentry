@@ -44,6 +44,13 @@ class TransactionOutputOut(BaseModel):
     script_type: str | None
 
 
+class RiskSummaryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    score: int
+    level: str
+    explanation: str = ""
+
+
 class TransactionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: int
@@ -56,6 +63,7 @@ class TransactionOut(BaseModel):
     is_coinbase: bool
     inputs: list[TransactionInputOut]
     outputs: list[TransactionOutputOut]
+    risk: RiskSummaryOut | None = None
 
 
 class RiskIndicatorOut(BaseModel):
@@ -106,3 +114,9 @@ class AddressLabelUpdate(BaseModel):
 
 class AlertStatusUpdate(BaseModel):
     status: str
+
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(min_length=8)
+

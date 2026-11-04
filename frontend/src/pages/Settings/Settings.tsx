@@ -9,7 +9,7 @@ import {
   Lock,
   Loader2,
 } from "lucide-react";
-import { logout } from "../../services/auth";
+import { logout, changePassword } from "../../services/auth";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { useTheme } from "../../hooks/useTheme";
 
@@ -481,8 +481,10 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!currentPassword || !newPassword || !confirmPassword) {
@@ -500,9 +502,23 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
       return;
     }
 
-    // Connect to the backend password-change endpoint when available.
+    setIsSubmitting(true);
     setError("");
-    onClose();
+
+    try {
+      await changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
+      setSuccess(true);
+      setTimeout(() => {
+        onClose();
+      }, 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update password.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -532,6 +548,13 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
 
         {/* Modal Form */}
         <form onSubmit={handleSubmit} className="space-y-4 p-5">
+          {success ? (
+            <div className="flex items-center gap-2 rounded-lg bg-emerald-500/10 p-3 text-xs font-medium text-emerald-400">
+              <CheckCircle2 size={16} />
+              Password updated successfully!
+            </div>
+          ) : null}
+
           <div>
             <label
               htmlFor="current-password"
@@ -545,7 +568,8 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               type="password"
               value={currentPassword}
               onChange={(event) => setCurrentPassword(event.target.value)}
-              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal"
+              disabled={isSubmitting || success}
+              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal disabled:opacity-50"
             />
           </div>
 
@@ -562,7 +586,8 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               type="password"
               value={newPassword}
               onChange={(event) => setNewPassword(event.target.value)}
-              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal"
+              disabled={isSubmitting || success}
+              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal disabled:opacity-50"
             />
           </div>
 
@@ -579,7 +604,8 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
               type="password"
               value={confirmPassword}
               onChange={(event) => setConfirmPassword(event.target.value)}
-              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal"
+              disabled={isSubmitting || success}
+              className="w-full rounded-lg border border-border-subtle bg-background px-3 py-2 text-sm text-text-primary outline-none focus:border-brand-teal disabled:opacity-50"
             />
           </div>
 
@@ -593,16 +619,25 @@ function ChangePasswordModal({ onClose }: ChangePasswordModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-border-subtle px-4 py-2 text-xs font-medium text-text-primary transition hover:bg-background-hover"
+              disabled={isSubmitting}
+              className="rounded-lg border border-border-subtle px-4 py-2 text-xs font-medium text-text-primary transition hover:bg-background-hover disabled:opacity-50"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="rounded-lg bg-brand-teal px-4 py-2 text-xs font-medium text-white transition hover:opacity-90"
+              disabled={isSubmitting || success}
+              className="flex items-center gap-1.5 rounded-lg bg-brand-teal px-4 py-2 text-xs font-medium text-white transition hover:opacity-90 disabled:opacity-50"
             >
-              Update Password
+              {isSubmitting ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Password"
+              )}
             </button>
           </div>
         </form>

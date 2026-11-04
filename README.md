@@ -680,18 +680,21 @@ The project is being developed incrementally.
 
 Planned areas include:
 
-- [ ] Frontend application shell
-- [ ] Application routing
-- [ ] Responsive navigation
-- [ ] Light/dark theme support
-- [ ] Dashboard analytics
-- [ ] Alert management
-- [ ] Transaction investigation
-- [ ] Address investigation
-- [ ] Case management
+- [x] Frontend application shell
+- [x] Application routing & authentication screens (Login / Signup)
+- [x] Responsive navigation
+- [x] Light/dark theme support
+- [x] Dashboard analytics & deep-linking
+- [x] Alert management
+- [x] Transaction investigation
+- [x] Address investigation
+- [x] Case management & action persistence
+- [x] AML detection and risk rules (7 deterministic rules)
+- [x] Backend integration & REST API
+- [x] Monitored Wallets management interface
+- [x] Immutable Audit trail interface
+- [x] User administration & RBAC
 - [ ] Advanced transaction relationship visualization
-- [ ] AML detection and risk rules
-- [ ] Backend integration
 - [ ] End-to-end testing
 - [ ] Production deployment
 
